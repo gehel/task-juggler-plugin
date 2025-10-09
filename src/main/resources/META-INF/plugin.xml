@@ -22,10 +22,16 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <fileType
-                name="Task Juggler"
-                implementationClass="fr.ledcom.tj3.taskjugglerplugin.TjFileType"
+                name="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.psi.TjFileType"
                 fieldName="INSTANCE"
                 language="TaskJuggler"
                 extensions="tjp" />
+        <lang.parserDefinition
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.TJParserDefinition" />
+        <lang.syntaxHighlighterFactory
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.TJSyntaxHighlighterFactory" />
     </extensions>
 </idea-plugin>

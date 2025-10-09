@@ -1,8 +1,7 @@
-import org.jetbrains.intellij.platform.gradle.IntelliJPlatform
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 
 plugins {
-    id("java")
+    java
     id("org.jetbrains.kotlin.jvm") version "2.1.0"
     id("org.jetbrains.intellij.platform") version "2.7.1"
 }
@@ -14,6 +13,14 @@ repositories {
     mavenCentral()
     intellijPlatform {
         defaultRepositories()
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs("src/main/gen")
+        }
     }
 }
 

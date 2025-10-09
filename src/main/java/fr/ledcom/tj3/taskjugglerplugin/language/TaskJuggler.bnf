@@ -1,0 +1,58 @@
+{
+  parserClass="fr.ledcom.tj3.taskjugglerplugin.TJParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="TJ"
+  psiImplClassSuffix="Impl"
+  psiPackage="fr.ledcom.tj3.taskjugglerplugin.language.psi"
+  psiImplPackage="fr.ledcom.tj3.taskjugglerplugin.language.psi.impl"
+
+  elementTypeHolderClass="fr.ledcom.tj3.taskjugglerplugin.language.psi.TJTypes"
+  elementTypeClass="fr.ledcom.tj3.taskjugglerplugin.language.psi.TJElementType"
+  tokenTypeClass="fr.ledcom.tj3.taskjugglerplugin.language.psi.TJTokenType"
+
+  tokens=[
+    space = 'regexp:\s+'
+    line_comment="regexp:#.*"
+    // Identifiers and names
+    ID='regexp:[a-zA-Z_][a-zA-Z0-9_]*'
+
+    L_CURLY='{'
+    R_CURLY='}'
+    DOT='.'
+
+    // Strings and numbers
+    STRING="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\.)*\")"
+    INTEGER='regexp:\d+'
+  ]
+}
+
+
+taskJugglerFile ::= (PROJECT|TASK)*
+
+ABSOLUTE_ID ::= ID{DOT ID}*
+
+YYYY ::= 'regexp:\d{4}'
+MM ::= 'regexp:\d{2}'
+DD ::= 'regexp:\d{2}'
+hh ::= 'regexp:\d{2}'
+m ::= 'regexp:\d{2}'
+ss ::= 'regexp:\d{2}'
+TIMEZONE ::= ('+'|'-')hh m
+BASE_DATE ::= YYYY'-'MM'-'DD['-'hh':'m[':'ss]]['-'TIMEZONE]
+DURATION ::= INTEGER ('min' | 'h' | 'd' | 'w' | 'm' | 'y')
+DATE ::= ( BASE_DATE | '%' L_CURLY BASE_DATE ('+'|'-') DURATION R_CURLY )
+
+INTERVAL2 ::= DATE ('-' DATE | '+' DURATION)
+
+PROJECT ::= 'project' [ID] STRING [STRING] INTERVAL2 [L_CURLY project_attributes R_CURLY]
+TASK ::= 'task' [ID] STRING [L_CURLY task_attributes R_CURLY]
+
+project_attributes ::= (currency|timezone)*
+task_attributes ::= (depends|note)*
+
+currency ::= 'currency' STRING
+depends ::= 'depends' (ID|ABSOLUTE_ID)
+note ::= 'note' STRING
+timezone ::= 'timezone' STRING

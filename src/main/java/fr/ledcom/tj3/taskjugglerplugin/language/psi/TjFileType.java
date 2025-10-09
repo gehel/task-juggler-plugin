@@ -1,9 +1,9 @@
-package fr.ledcom.tj3.taskjugglerplugin;
+package fr.ledcom.tj3.taskjugglerplugin.language.psi;
 
-import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.util.NlsContexts;
 import com.intellij.openapi.util.NlsSafe;
+import fr.ledcom.tj3.taskjugglerplugin.TJLanguage;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
