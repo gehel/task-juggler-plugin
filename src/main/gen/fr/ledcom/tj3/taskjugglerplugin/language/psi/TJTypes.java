@@ -12,7 +12,6 @@ public interface TJTypes {
   IElementType CURRENCY = new TJElementType("CURRENCY");
   IElementType DATE = new TJElementType("DATE");
   IElementType DEPENDS = new TJElementType("DEPENDS");
-  IElementType DURATION = new TJElementType("DURATION");
   IElementType INTERVAL_2 = new TJElementType("INTERVAL_2");
   IElementType NOTE = new TJElementType("NOTE");
   IElementType PROJECT = new TJElementType("PROJECT");
@@ -20,11 +19,11 @@ public interface TJTypes {
   IElementType TIMEZONE = new TJElementType("TIMEZONE");
 
   IElementType BASE_DATE = new TJTokenType("BASE_DATE");
-  IElementType DIGIT2 = new TJTokenType("DIGIT2");
-  IElementType DIGIT4 = new TJTokenType("DIGIT4");
   IElementType DOT = new TJTokenType(".");
+  IElementType DURATION = new TJTokenType("DURATION");
+  IElementType FLOAT = new TJTokenType("\\d+\\.\\d+");
   IElementType ID = new TJTokenType("ID");
-  IElementType INTEGER = new TJTokenType("INTEGER");
+  IElementType INTEGER = new TJTokenType("\\d+");
   IElementType LINE_COMMENT = new TJTokenType("line_comment");
   IElementType L_CURLY = new TJTokenType("{");
   IElementType R_CURLY = new TJTokenType("}");
@@ -44,9 +43,6 @@ public interface TJTypes {
       }
       else if (type == DEPENDS) {
         return new TJDependsImpl(node);
-      }
-      else if (type == DURATION) {
-        return new TJDurationImpl(node);
       }
       else if (type == INTERVAL_2) {
         return new TJInterval2Impl(node);

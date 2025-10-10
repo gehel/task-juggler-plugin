@@ -89,8 +89,7 @@ public class TJParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, "%");
     r = r && consumeTokens(b, 0, L_CURLY, BASE_DATE);
     r = r && DATE_1_3(b, l + 1);
-    r = r && DURATION(b, l + 1);
-    r = r && consumeToken(b, R_CURLY);
+    r = r && consumeTokens(b, 0, DURATION, R_CURLY);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -101,32 +100,6 @@ public class TJParser implements PsiParser, LightPsiParser {
     boolean r;
     r = consumeToken(b, "+");
     if (!r) r = consumeToken(b, "-");
-    return r;
-  }
-
-  /* ********************************************************** */
-  // INTEGER ('min' | 'h' | 'd' | 'w' | 'm' | 'y')
-  public static boolean DURATION(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "DURATION")) return false;
-    if (!nextTokenIs(b, INTEGER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, INTEGER);
-    r = r && DURATION_1(b, l + 1);
-    exit_section_(b, m, DURATION, r);
-    return r;
-  }
-
-  // 'min' | 'h' | 'd' | 'w' | 'm' | 'y'
-  private static boolean DURATION_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "DURATION_1")) return false;
-    boolean r;
-    r = consumeToken(b, "min");
-    if (!r) r = consumeToken(b, "h");
-    if (!r) r = consumeToken(b, "d");
-    if (!r) r = consumeToken(b, "w");
-    if (!r) r = consumeToken(b, "m");
-    if (!r) r = consumeToken(b, "y");
     return r;
   }
 
@@ -170,7 +143,7 @@ public class TJParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, "+");
-    r = r && DURATION(b, l + 1);
+    r = r && consumeToken(b, DURATION);
     exit_section_(b, m, null, r);
     return r;
   }

@@ -11,6 +11,6 @@ public interface TJInterval2 extends PsiElement {
   List<TJDate> getDateList();
 
   @Nullable
-  TJDuration getDuration();
+  PsiElement getDuration();
 
 }

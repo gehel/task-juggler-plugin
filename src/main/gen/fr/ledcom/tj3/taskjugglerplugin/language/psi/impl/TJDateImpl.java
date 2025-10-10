@@ -28,15 +28,15 @@ public class TJDateImpl extends ASTWrapperPsiElement implements TJDate {
   }
 
   @Override
-  @Nullable
-  public TJDuration getDuration() {
-    return findChildByClass(TJDuration.class);
-  }
-
-  @Override
   @NotNull
   public PsiElement getBaseDate() {
     return findNotNullChildByType(BASE_DATE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDuration() {
+    return findChildByType(DURATION);
   }
 
 }

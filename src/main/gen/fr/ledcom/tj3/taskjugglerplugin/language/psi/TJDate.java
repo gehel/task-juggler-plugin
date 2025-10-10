@@ -7,10 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface TJDate extends PsiElement {
 
-  @Nullable
-  TJDuration getDuration();
-
   @NotNull
   PsiElement getBaseDate();
+
+  @Nullable
+  PsiElement getDuration();
 
 }

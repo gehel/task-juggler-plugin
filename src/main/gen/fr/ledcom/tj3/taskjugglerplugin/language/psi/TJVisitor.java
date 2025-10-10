@@ -15,10 +15,6 @@ public class TJVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitDuration(@NotNull TJDuration o) {
-    visitPsiElement(o);
-  }
-
   public void visitInterval2(@NotNull TJInterval2 o) {
     visitPsiElement(o);
   }
