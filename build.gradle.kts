@@ -34,6 +34,10 @@ dependencies {
         // Add necessary plugin dependencies for compilation here, example:
         // bundledPlugin("com.intellij.java")
     }
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
+    testImplementation("org.assertj:assertj-core:4.0.0-M1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.2.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-console:1.2.0")
 }
 
 intellijPlatform {
@@ -58,6 +62,9 @@ tasks {
     withType<JavaCompile> {
         sourceCompatibility = "21"
         targetCompatibility = "21"
+    }
+    test {
+        useJUnitPlatform()
     }
 }
 
