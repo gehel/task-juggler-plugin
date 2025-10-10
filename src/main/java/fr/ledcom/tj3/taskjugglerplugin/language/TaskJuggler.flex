@@ -44,8 +44,8 @@ DOT=\.
 %%
 
 <YYINITIAL> {TASK_KEYWORD}                                  { return TJTypes.TASK; }
-<YYINITIAL> {DEPENDS_KEYWORD}                              { return TJTypes.DEPENDS; }
-<YYINITIAL> {NOTE_KEYWORD}                                 { return TJTypes.NOTE; }
+<YYINITIAL> {DEPENDS_KEYWORD}                               { return TJTypes.DEPENDS; }
+<YYINITIAL> {NOTE_KEYWORD}                                  { return TJTypes.NOTE; }
 
 <YYINITIAL> {STRING}                                        { return TJTypes.STRING; }
 <YYINITIAL> {INTEGER}                                       { return TJTypes.INTEGER; }

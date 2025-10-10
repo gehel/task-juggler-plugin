@@ -10,8 +10,11 @@ public interface TJProject extends PsiElement {
   @NotNull
   TJInterval2 getInterval2();
 
-  @Nullable
-  TJProjectAttributes getProjectAttributes();
+  @NotNull
+  List<TJCurrency> getCurrencyList();
+
+  @NotNull
+  List<TJTimezone> getTimezoneList();
 
   @Nullable
   PsiElement getId();

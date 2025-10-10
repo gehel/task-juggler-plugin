@@ -11,15 +11,7 @@ public class TJVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitBaseDate(@NotNull TJBaseDate o) {
-    visitPsiElement(o);
-  }
-
   public void visitDate(@NotNull TJDate o) {
-    visitPsiElement(o);
-  }
-
-  public void visitDd(@NotNull TJDd o) {
     visitPsiElement(o);
   }
 
@@ -31,23 +23,11 @@ public class TJVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitMm(@NotNull TJMm o) {
-    visitPsiElement(o);
-  }
-
   public void visitProject(@NotNull TJProject o) {
     visitPsiElement(o);
   }
 
   public void visitTask(@NotNull TJTask o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTimezone(@NotNull TJTimezone o) {
-    visitPsiElement(o);
-  }
-
-  public void visitYyyy(@NotNull TJYyyy o) {
     visitPsiElement(o);
   }
 
@@ -59,27 +39,11 @@ public class TJVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitHh(@NotNull TJHh o) {
-    visitPsiElement(o);
-  }
-
-  public void visitM(@NotNull TJM o) {
-    visitPsiElement(o);
-  }
-
   public void visitNote(@NotNull TJNote o) {
     visitPsiElement(o);
   }
 
-  public void visitProjectAttributes(@NotNull TJProjectAttributes o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSs(@NotNull TJSs o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTaskAttributes(@NotNull TJTaskAttributes o) {
+  public void visitTimezone(@NotNull TJTimezone o) {
     visitPsiElement(o);
   }
 

@@ -6,6 +6,5 @@ import javax.swing.Icon;
 
 public class TJIcons {
 
-    public static final Icon FILE = IconLoader.getIcon("/icons/taskjuggler_icon.png",  TJIcons.class);
-
+    public static final Icon FILE = IconLoader.getIcon("/icons/taskjuggler_icon.svg",  TJIcons.class);
 }

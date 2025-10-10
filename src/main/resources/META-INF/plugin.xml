@@ -33,5 +33,7 @@
         <lang.syntaxHighlighterFactory
                 language="TaskJuggler"
                 implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.TJSyntaxHighlighterFactory" />
+        <colorSettingsPage
+                implementation="fr.ledcom.tj3.taskjugglerplugin.language.TJColorSettingsPage" />
     </extensions>
 </idea-plugin>

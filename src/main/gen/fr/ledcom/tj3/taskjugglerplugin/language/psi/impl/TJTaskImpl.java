@@ -28,9 +28,15 @@ public class TJTaskImpl extends ASTWrapperPsiElement implements TJTask {
   }
 
   @Override
-  @Nullable
-  public TJTaskAttributes getTaskAttributes() {
-    return findChildByClass(TJTaskAttributes.class);
+  @NotNull
+  public List<TJDepends> getDependsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TJDepends.class);
+  }
+
+  @Override
+  @NotNull
+  public List<TJNote> getNoteList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TJNote.class);
   }
 
   @Override

@@ -29,14 +29,8 @@ public class TJTimezoneImpl extends ASTWrapperPsiElement implements TJTimezone {
 
   @Override
   @NotNull
-  public TJHh getHh() {
-    return findNotNullChildByClass(TJHh.class);
-  }
-
-  @Override
-  @NotNull
-  public TJM getM() {
-    return findNotNullChildByClass(TJM.class);
+  public PsiElement getString() {
+    return findNotNullChildByType(STRING);
   }
 
 }

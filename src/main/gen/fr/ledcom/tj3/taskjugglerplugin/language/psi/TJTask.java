@@ -7,8 +7,11 @@ import com.intellij.psi.PsiElement;
 
 public interface TJTask extends PsiElement {
 
-  @Nullable
-  TJTaskAttributes getTaskAttributes();
+  @NotNull
+  List<TJDepends> getDependsList();
+
+  @NotNull
+  List<TJNote> getNoteList();
 
   @Nullable
   PsiElement getId();

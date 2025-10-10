@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface TJTimezone extends PsiElement {
 
   @NotNull
-  TJHh getHh();
-
-  @NotNull
-  TJM getM();
+  PsiElement getString();
 
 }

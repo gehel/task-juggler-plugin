@@ -34,9 +34,15 @@ public class TJProjectImpl extends ASTWrapperPsiElement implements TJProject {
   }
 
   @Override
-  @Nullable
-  public TJProjectAttributes getProjectAttributes() {
-    return findChildByClass(TJProjectAttributes.class);
+  @NotNull
+  public List<TJCurrency> getCurrencyList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TJCurrency.class);
+  }
+
+  @Override
+  @NotNull
+  public List<TJTimezone> getTimezoneList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TJTimezone.class);
   }
 
   @Override

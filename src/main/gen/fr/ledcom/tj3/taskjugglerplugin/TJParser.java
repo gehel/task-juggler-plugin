@@ -70,86 +70,12 @@ public class TJParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // YYYY'-'MM'-'DD['-'hh':'m[':'ss]]['-'TIMEZONE]
-  public static boolean BASE_DATE(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "BASE_DATE")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, BASE_DATE, "<base date>");
-    r = YYYY(b, l + 1);
-    r = r && consumeToken(b, "-");
-    r = r && MM(b, l + 1);
-    r = r && consumeToken(b, "-");
-    r = r && DD(b, l + 1);
-    r = r && BASE_DATE_5(b, l + 1);
-    r = r && BASE_DATE_6(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // ['-'hh':'m[':'ss]]
-  private static boolean BASE_DATE_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "BASE_DATE_5")) return false;
-    BASE_DATE_5_0(b, l + 1);
-    return true;
-  }
-
-  // '-'hh':'m[':'ss]
-  private static boolean BASE_DATE_5_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "BASE_DATE_5_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, "-");
-    r = r && hh(b, l + 1);
-    r = r && consumeToken(b, ":");
-    r = r && m(b, l + 1);
-    r = r && BASE_DATE_5_0_4(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // [':'ss]
-  private static boolean BASE_DATE_5_0_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "BASE_DATE_5_0_4")) return false;
-    BASE_DATE_5_0_4_0(b, l + 1);
-    return true;
-  }
-
-  // ':'ss
-  private static boolean BASE_DATE_5_0_4_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "BASE_DATE_5_0_4_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, ":");
-    r = r && ss(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ['-'TIMEZONE]
-  private static boolean BASE_DATE_6(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "BASE_DATE_6")) return false;
-    BASE_DATE_6_0(b, l + 1);
-    return true;
-  }
-
-  // '-'TIMEZONE
-  private static boolean BASE_DATE_6_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "BASE_DATE_6_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, "-");
-    r = r && TIMEZONE(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
   // BASE_DATE | '%' L_CURLY BASE_DATE ('+'|'-') DURATION R_CURLY
   public static boolean DATE(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "DATE")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, DATE, "<date>");
-    r = BASE_DATE(b, l + 1);
+    r = consumeToken(b, BASE_DATE);
     if (!r) r = DATE_1(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
@@ -161,8 +87,7 @@ public class TJParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, "%");
-    r = r && consumeToken(b, L_CURLY);
-    r = r && BASE_DATE(b, l + 1);
+    r = r && consumeTokens(b, 0, L_CURLY, BASE_DATE);
     r = r && DATE_1_3(b, l + 1);
     r = r && DURATION(b, l + 1);
     r = r && consumeToken(b, R_CURLY);
@@ -176,17 +101,6 @@ public class TJParser implements PsiParser, LightPsiParser {
     boolean r;
     r = consumeToken(b, "+");
     if (!r) r = consumeToken(b, "-");
-    return r;
-  }
-
-  /* ********************************************************** */
-  // 'regexp:\d{2}'
-  public static boolean DD(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "DD")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, DD, "<dd>");
-    r = consumeToken(b, "regexp:\\d{2}");
-    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -258,17 +172,6 @@ public class TJParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, "+");
     r = r && DURATION(b, l + 1);
     exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // 'regexp:\d{2}'
-  public static boolean MM(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "MM")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, MM, "<mm>");
-    r = consumeToken(b, "regexp:\\d{2}");
-    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -362,39 +265,6 @@ public class TJParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ('+'|'-')hh m
-  public static boolean TIMEZONE(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TIMEZONE")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, TIMEZONE, "<timezone>");
-    r = TIMEZONE_0(b, l + 1);
-    r = r && hh(b, l + 1);
-    r = r && m(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // '+'|'-'
-  private static boolean TIMEZONE_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TIMEZONE_0")) return false;
-    boolean r;
-    r = consumeToken(b, "+");
-    if (!r) r = consumeToken(b, "-");
-    return r;
-  }
-
-  /* ********************************************************** */
-  // 'regexp:\d{4}'
-  public static boolean YYYY(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "YYYY")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, YYYY, "<yyyy>");
-    r = consumeToken(b, "regexp:\\d{4}");
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
   // 'currency' STRING
   public static boolean currency(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "currency")) return false;
@@ -428,28 +298,6 @@ public class TJParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'regexp:\d{2}'
-  public static boolean hh(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "hh")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, HH, "<hh>");
-    r = consumeToken(b, "regexp:\\d{2}");
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // 'regexp:\d{2}'
-  public static boolean m(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "m")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, M, "<m>");
-    r = consumeToken(b, "regexp:\\d{2}");
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
   // 'note' STRING
   public static boolean note(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "note")) return false;
@@ -463,15 +311,13 @@ public class TJParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // (currency|timezone)*
-  public static boolean project_attributes(PsiBuilder b, int l) {
+  static boolean project_attributes(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "project_attributes")) return false;
-    Marker m = enter_section_(b, l, _NONE_, PROJECT_ATTRIBUTES, "<project attributes>");
     while (true) {
       int c = current_position_(b);
       if (!project_attributes_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "project_attributes", c)) break;
     }
-    exit_section_(b, l, m, true, false, null);
     return true;
   }
 
@@ -481,17 +327,6 @@ public class TJParser implements PsiParser, LightPsiParser {
     boolean r;
     r = currency(b, l + 1);
     if (!r) r = timezone(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // 'regexp:\d{2}'
-  public static boolean ss(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ss")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, SS, "<ss>");
-    r = consumeToken(b, "regexp:\\d{2}");
-    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -518,15 +353,13 @@ public class TJParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // (depends|note)*
-  public static boolean task_attributes(PsiBuilder b, int l) {
+  static boolean task_attributes(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "task_attributes")) return false;
-    Marker m = enter_section_(b, l, _NONE_, TASK_ATTRIBUTES, "<task attributes>");
     while (true) {
       int c = current_position_(b);
       if (!task_attributes_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "task_attributes", c)) break;
     }
-    exit_section_(b, l, m, true, false, null);
     return true;
   }
 
