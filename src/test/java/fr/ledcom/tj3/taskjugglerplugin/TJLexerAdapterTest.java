@@ -1,8 +1,8 @@
 package fr.ledcom.tj3.taskjugglerplugin;
 
-import com.intellij.psi.tree.IElementType;
 import fr.ledcom.tj3.taskjugglerplugin.language.TJLexerAdapter;
 import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TJLexerAdapterTest {

@@ -35,8 +35,8 @@ public class TJDependsImpl extends ASTWrapperPsiElement implements TJDepends {
 
   @Override
   @Nullable
-  public PsiElement getId() {
-    return findChildByType(ID);
+  public TJRelativeId getRelativeId() {
+    return findChildByClass(TJRelativeId.class);
   }
 
 }

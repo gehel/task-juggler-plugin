@@ -70,7 +70,7 @@ public class TJParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // BASE_DATE | '%' L_CURLY BASE_DATE ('+'|'-') DURATION R_CURLY
+  // BASE_DATE | '%' L_CURLY BASE_DATE ('+'|'-') DURATION_ R_CURLY
   public static boolean DATE(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "DATE")) return false;
     boolean r;
@@ -81,7 +81,7 @@ public class TJParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '%' L_CURLY BASE_DATE ('+'|'-') DURATION R_CURLY
+  // '%' L_CURLY BASE_DATE ('+'|'-') DURATION_ R_CURLY
   private static boolean DATE_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "DATE_1")) return false;
     boolean r;
@@ -89,7 +89,7 @@ public class TJParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, "%");
     r = r && consumeTokens(b, 0, L_CURLY, BASE_DATE);
     r = r && DATE_1_3(b, l + 1);
-    r = r && consumeTokens(b, 0, DURATION, R_CURLY);
+    r = r && consumeTokens(b, 0, DURATION_, R_CURLY);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -104,7 +104,7 @@ public class TJParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // DATE ('-' DATE | '+' DURATION)
+  // DATE ('-' DATE | '+' DURATION_)
   public static boolean INTERVAL2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "INTERVAL2")) return false;
     boolean r;
@@ -115,7 +115,7 @@ public class TJParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '-' DATE | '+' DURATION
+  // '-' DATE | '+' DURATION_
   private static boolean INTERVAL2_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "INTERVAL2_1")) return false;
     boolean r;
@@ -137,19 +137,19 @@ public class TJParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '+' DURATION
+  // '+' DURATION_
   private static boolean INTERVAL2_1_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "INTERVAL2_1_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, "+");
-    r = r && consumeToken(b, DURATION);
+    r = r && consumeToken(b, DURATION_);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'project' [ID] STRING [STRING] INTERVAL2 [L_CURLY project_attributes R_CURLY]
+  // 'project' [ID] STRING [STRING] INTERVAL2 L_CURLY (project_attributes_)* R_CURLY
   public static boolean PROJECT(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "PROJECT")) return false;
     boolean r;
@@ -159,7 +159,9 @@ public class TJParser implements PsiParser, LightPsiParser {
     r = r && consumeToken(b, STRING);
     r = r && PROJECT_3(b, l + 1);
     r = r && INTERVAL2(b, l + 1);
-    r = r && PROJECT_5(b, l + 1);
+    r = r && consumeToken(b, L_CURLY);
+    r = r && PROJECT_6(b, l + 1);
+    r = r && consumeToken(b, R_CURLY);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -178,35 +180,72 @@ public class TJParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // [L_CURLY project_attributes R_CURLY]
-  private static boolean PROJECT_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "PROJECT_5")) return false;
-    PROJECT_5_0(b, l + 1);
+  // (project_attributes_)*
+  private static boolean PROJECT_6(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "PROJECT_6")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!PROJECT_6_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "PROJECT_6", c)) break;
+    }
     return true;
   }
 
-  // L_CURLY project_attributes R_CURLY
-  private static boolean PROJECT_5_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "PROJECT_5_0")) return false;
+  // (project_attributes_)
+  private static boolean PROJECT_6_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "PROJECT_6_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, L_CURLY);
-    r = r && project_attributes(b, l + 1);
-    r = r && consumeToken(b, R_CURLY);
+    r = project_attributes_(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'task' [ID] STRING [L_CURLY task_attributes R_CURLY]
+  // REL_ID_MARK ID{DOT ID}*
+  public static boolean RELATIVE_ID(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RELATIVE_ID")) return false;
+    if (!nextTokenIs(b, REL_ID_MARK)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, REL_ID_MARK, ID);
+    r = r && RELATIVE_ID_2(b, l + 1);
+    exit_section_(b, m, RELATIVE_ID, r);
+    return r;
+  }
+
+  // {DOT ID}*
+  private static boolean RELATIVE_ID_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RELATIVE_ID_2")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!RELATIVE_ID_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "RELATIVE_ID_2", c)) break;
+    }
+    return true;
+  }
+
+  // DOT ID
+  private static boolean RELATIVE_ID_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RELATIVE_ID_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, DOT, ID);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // 'task' [ID] STRING L_CURLY (task_attributes_)* R_CURLY
   public static boolean TASK(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "TASK")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, TASK, "<task>");
     r = consumeToken(b, "task");
     r = r && TASK_1(b, l + 1);
-    r = r && consumeToken(b, STRING);
-    r = r && TASK_3(b, l + 1);
+    r = r && consumeTokens(b, 0, STRING, L_CURLY);
+    r = r && TASK_4(b, l + 1);
+    r = r && consumeToken(b, R_CURLY);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -218,21 +257,23 @@ public class TJParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // [L_CURLY task_attributes R_CURLY]
-  private static boolean TASK_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TASK_3")) return false;
-    TASK_3_0(b, l + 1);
+  // (task_attributes_)*
+  private static boolean TASK_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "TASK_4")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!TASK_4_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "TASK_4", c)) break;
+    }
     return true;
   }
 
-  // L_CURLY task_attributes R_CURLY
-  private static boolean TASK_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TASK_3_0")) return false;
+  // (task_attributes_)
+  private static boolean TASK_4_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "TASK_4_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, L_CURLY);
-    r = r && task_attributes(b, l + 1);
-    r = r && consumeToken(b, R_CURLY);
+    r = task_attributes_(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -250,7 +291,7 @@ public class TJParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'depends' (ID|ABSOLUTE_ID)
+  // 'depends' (RELATIVE_ID|ABSOLUTE_ID)
   public static boolean depends(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "depends")) return false;
     boolean r;
@@ -261,12 +302,24 @@ public class TJParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ID|ABSOLUTE_ID
+  // RELATIVE_ID|ABSOLUTE_ID
   private static boolean depends_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "depends_1")) return false;
     boolean r;
-    r = consumeToken(b, ID);
+    r = RELATIVE_ID(b, l + 1);
     if (!r) r = ABSOLUTE_ID(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // 'duration' DURATION_
+  public static boolean duration(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "duration")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, DURATION, "<duration>");
+    r = consumeToken(b, "duration");
+    r = r && consumeToken(b, DURATION_);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -283,20 +336,9 @@ public class TJParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (currency|timezone)*
-  static boolean project_attributes(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "project_attributes")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!project_attributes_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "project_attributes", c)) break;
-    }
-    return true;
-  }
-
   // currency|timezone
-  private static boolean project_attributes_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "project_attributes_0")) return false;
+  static boolean project_attributes_(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "project_attributes_")) return false;
     boolean r;
     r = currency(b, l + 1);
     if (!r) r = timezone(b, l + 1);
@@ -304,7 +346,31 @@ public class TJParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (PROJECT|TASK)*
+  // 'responsible' ID
+  public static boolean responsible(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "responsible")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, RESPONSIBLE, "<responsible>");
+    r = consumeToken(b, "responsible");
+    r = r && consumeToken(b, ID);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // 'start' DATE
+  public static boolean start(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "start")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, START, "<start>");
+    r = consumeToken(b, "start");
+    r = r && DATE(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // (TASK|PROJECT)*
   static boolean taskJugglerFile(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "taskJugglerFile")) return false;
     while (true) {
@@ -315,33 +381,26 @@ public class TJParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // PROJECT|TASK
+  // TASK|PROJECT
   private static boolean taskJugglerFile_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "taskJugglerFile_0")) return false;
     boolean r;
-    r = PROJECT(b, l + 1);
-    if (!r) r = TASK(b, l + 1);
+    r = TASK(b, l + 1);
+    if (!r) r = PROJECT(b, l + 1);
     return r;
   }
 
   /* ********************************************************** */
-  // (depends|note)*
-  static boolean task_attributes(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "task_attributes")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!task_attributes_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "task_attributes", c)) break;
-    }
-    return true;
-  }
-
-  // depends|note
-  private static boolean task_attributes_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "task_attributes_0")) return false;
+  // start|responsible|note|duration|depends|TASK
+  static boolean task_attributes_(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "task_attributes_")) return false;
     boolean r;
-    r = depends(b, l + 1);
+    r = start(b, l + 1);
+    if (!r) r = responsible(b, l + 1);
     if (!r) r = note(b, l + 1);
+    if (!r) r = duration(b, l + 1);
+    if (!r) r = depends(b, l + 1);
+    if (!r) r = TASK(b, l + 1);
     return r;
   }
 

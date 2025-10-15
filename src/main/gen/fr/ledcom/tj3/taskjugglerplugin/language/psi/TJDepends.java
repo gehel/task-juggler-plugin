@@ -11,6 +11,6 @@ public interface TJDepends extends PsiElement {
   TJAbsoluteId getAbsoluteId();
 
   @Nullable
-  PsiElement getId();
+  TJRelativeId getRelativeId();
 
 }

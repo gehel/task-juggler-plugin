@@ -12,20 +12,25 @@ public interface TJTypes {
   IElementType CURRENCY = new TJElementType("CURRENCY");
   IElementType DATE = new TJElementType("DATE");
   IElementType DEPENDS = new TJElementType("DEPENDS");
+  IElementType DURATION = new TJElementType("DURATION");
   IElementType INTERVAL_2 = new TJElementType("INTERVAL_2");
   IElementType NOTE = new TJElementType("NOTE");
   IElementType PROJECT = new TJElementType("PROJECT");
+  IElementType RELATIVE_ID = new TJElementType("RELATIVE_ID");
+  IElementType RESPONSIBLE = new TJElementType("RESPONSIBLE");
+  IElementType START = new TJElementType("START");
   IElementType TASK = new TJElementType("TASK");
   IElementType TIMEZONE = new TJElementType("TIMEZONE");
 
   IElementType BASE_DATE = new TJTokenType("BASE_DATE");
   IElementType DOT = new TJTokenType(".");
-  IElementType DURATION = new TJTokenType("DURATION");
+  IElementType DURATION_ = new TJTokenType("DURATION_");
   IElementType FLOAT = new TJTokenType("\\d+\\.\\d+");
   IElementType ID = new TJTokenType("ID");
   IElementType INTEGER = new TJTokenType("\\d+");
   IElementType LINE_COMMENT = new TJTokenType("line_comment");
   IElementType L_CURLY = new TJTokenType("{");
+  IElementType REL_ID_MARK = new TJTokenType("!");
   IElementType R_CURLY = new TJTokenType("}");
   IElementType STRING = new TJTokenType("STRING");
 
@@ -44,6 +49,9 @@ public interface TJTypes {
       else if (type == DEPENDS) {
         return new TJDependsImpl(node);
       }
+      else if (type == DURATION) {
+        return new TJDurationImpl(node);
+      }
       else if (type == INTERVAL_2) {
         return new TJInterval2Impl(node);
       }
@@ -52,6 +60,15 @@ public interface TJTypes {
       }
       else if (type == PROJECT) {
         return new TJProjectImpl(node);
+      }
+      else if (type == RELATIVE_ID) {
+        return new TJRelativeIdImpl(node);
+      }
+      else if (type == RESPONSIBLE) {
+        return new TJResponsibleImpl(node);
+      }
+      else if (type == START) {
+        return new TJStartImpl(node);
       }
       else if (type == TASK) {
         return new TJTaskImpl(node);

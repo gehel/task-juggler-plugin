@@ -11,6 +11,6 @@ public interface TJDate extends PsiElement {
   PsiElement getBaseDate();
 
   @Nullable
-  PsiElement getDuration();
+  PsiElement getDuration_();
 
 }

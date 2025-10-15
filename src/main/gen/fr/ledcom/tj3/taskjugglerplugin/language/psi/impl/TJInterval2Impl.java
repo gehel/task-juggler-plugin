@@ -35,8 +35,8 @@ public class TJInterval2Impl extends ASTWrapperPsiElement implements TJInterval2
 
   @Override
   @Nullable
-  public PsiElement getDuration() {
-    return findChildByType(DURATION);
+  public PsiElement getDuration_() {
+    return findChildByType(DURATION_);
   }
 
 }

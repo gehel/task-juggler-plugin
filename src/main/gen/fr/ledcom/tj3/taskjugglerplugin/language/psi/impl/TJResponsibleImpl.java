@@ -11,14 +11,14 @@ import static fr.ledcom.tj3.taskjugglerplugin.language.psi.TJTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import fr.ledcom.tj3.taskjugglerplugin.language.psi.*;
 
-public class TJDateImpl extends ASTWrapperPsiElement implements TJDate {
+public class TJResponsibleImpl extends ASTWrapperPsiElement implements TJResponsible {
 
-  public TJDateImpl(@NotNull ASTNode node) {
+  public TJResponsibleImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull TJVisitor visitor) {
-    visitor.visitDate(this);
+    visitor.visitResponsible(this);
   }
 
   @Override
@@ -29,14 +29,8 @@ public class TJDateImpl extends ASTWrapperPsiElement implements TJDate {
 
   @Override
   @NotNull
-  public PsiElement getBaseDate() {
-    return findNotNullChildByType(BASE_DATE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getDuration_() {
-    return findChildByType(DURATION_);
+  public PsiElement getId() {
+    return findNotNullChildByType(ID);
   }
 
 }

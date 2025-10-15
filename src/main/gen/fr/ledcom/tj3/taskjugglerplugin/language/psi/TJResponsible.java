@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TJInterval2 extends PsiElement {
+public interface TJResponsible extends PsiElement {
 
   @NotNull
-  List<TJDate> getDateList();
-
-  @Nullable
-  PsiElement getDuration_();
+  PsiElement getId();
 
 }

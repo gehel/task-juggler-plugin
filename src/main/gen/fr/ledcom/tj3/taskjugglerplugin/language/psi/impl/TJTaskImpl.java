@@ -29,14 +29,38 @@ public class TJTaskImpl extends ASTWrapperPsiElement implements TJTask {
 
   @Override
   @NotNull
+  public List<TJTask> getTaskList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TJTask.class);
+  }
+
+  @Override
+  @NotNull
   public List<TJDepends> getDependsList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TJDepends.class);
   }
 
   @Override
   @NotNull
+  public List<TJDuration> getDurationList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TJDuration.class);
+  }
+
+  @Override
+  @NotNull
   public List<TJNote> getNoteList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TJNote.class);
+  }
+
+  @Override
+  @NotNull
+  public List<TJResponsible> getResponsibleList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TJResponsible.class);
+  }
+
+  @Override
+  @NotNull
+  public List<TJStart> getStartList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TJStart.class);
   }
 
   @Override

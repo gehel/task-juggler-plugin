@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface TJDuration extends PsiElement {
 
   @NotNull
-  PsiElement getInteger();
+  PsiElement getDuration_();
 
 }

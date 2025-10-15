@@ -23,6 +23,10 @@ public class TJVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitRelativeId(@NotNull TJRelativeId o) {
+    visitPsiElement(o);
+  }
+
   public void visitTask(@NotNull TJTask o) {
     visitPsiElement(o);
   }
@@ -35,7 +39,19 @@ public class TJVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitDuration(@NotNull TJDuration o) {
+    visitPsiElement(o);
+  }
+
   public void visitNote(@NotNull TJNote o) {
+    visitPsiElement(o);
+  }
+
+  public void visitResponsible(@NotNull TJResponsible o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStart(@NotNull TJStart o) {
     visitPsiElement(o);
   }
 

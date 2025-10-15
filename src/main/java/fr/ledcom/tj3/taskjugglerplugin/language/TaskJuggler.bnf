@@ -24,28 +24,34 @@
     L_CURLY="{"
     R_CURLY="}"
     DOT="."
+    REL_ID_MARK='!'
 
     BASE_DATE="regexp:\d{4}-\d{2}-\d{2}(-\d{2}:\d{2}(:\d{2})?)?"
-    DURATION="regexp:\d+(min|h|d|w|m|y)"
+    DURATION_="regexp:\d+(min|h|d|w|m|y)"
   ]
 }
 
 
-taskJugglerFile ::= (PROJECT|TASK)*
+taskJugglerFile ::= (TASK|PROJECT)*
 
-ABSOLUTE_ID ::= ID{DOT ID}*
+TASK ::= 'task' [ID] STRING L_CURLY (task_attributes_)* R_CURLY
+private task_attributes_ ::= (start|responsible|note|duration|depends|TASK)
 
-DATE ::= ( BASE_DATE | '%' L_CURLY BASE_DATE ('+'|'-') DURATION R_CURLY )
+PROJECT ::= 'project' [ID] STRING [STRING] INTERVAL2 L_CURLY (project_attributes_)* R_CURLY
+private project_attributes_ ::= (currency|timezone)
 
-INTERVAL2 ::= DATE ('-' DATE | '+' DURATION)
-
-PROJECT ::= 'project' [ID] STRING [STRING] INTERVAL2 [L_CURLY project_attributes R_CURLY]
-TASK ::= 'task' [ID] STRING [L_CURLY task_attributes R_CURLY]
-
-private project_attributes ::= (currency|timezone)*
-private task_attributes ::= (depends|note)*
+start ::= 'start' DATE
+responsible ::= 'responsible' ID
+note ::= 'note' STRING
+duration ::= 'duration' DURATION_
+depends ::= 'depends' (RELATIVE_ID|ABSOLUTE_ID)
 
 currency ::= 'currency' STRING
-depends ::= 'depends' (ID|ABSOLUTE_ID)
-note ::= 'note' STRING
 timezone ::= 'timezone' STRING
+
+ABSOLUTE_ID ::= ID{DOT ID}*
+RELATIVE_ID ::= REL_ID_MARK ID{DOT ID}*
+
+DATE ::= ( BASE_DATE | '%' L_CURLY BASE_DATE ('+'|'-') DURATION_ R_CURLY )
+
+INTERVAL2 ::= DATE ('-' DATE | '+' DURATION_)
