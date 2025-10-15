@@ -51,8 +51,6 @@ DOT=\.
 <YYINITIAL> {INTEGER}                                       { return TJTypes.INTEGER; }
 <YYINITIAL> {ID}                                            { return TJTypes.ID; }
 
-<YYINITIAL> {LBRACE}                                        { return TJTypes.L_CURLY; }
-<YYINITIAL> {RBRACE}                                        { return TJTypes.R_CURLY; }
 <YYINITIAL> {DOT}                                           { return TJTypes.DOT; }
 
 <YYINITIAL> {WHITE_SPACE}+                                  { return TokenType.WHITE_SPACE; }
