@@ -18,43 +18,40 @@ import fr.ledcom.tj3.taskjugglerplugin.language.psi.TJTypes;
 CRLF=\R
 WHITE_SPACE=[\ \n\t\f]
 
-END_OF_LINE_COMMENT=("#"|"!")[^\r\n]*
+END_OF_LINE_COMMENT="#"[^\r\n]*
 
 // Keywords
 TASK_KEYWORD="task"
 DEPENDS_KEYWORD="depends"
-NOTE_KEYWORD="note"
 
 // Identifiers: start with letter or underscore, followed by letters, digits, underscores
 ID=[a-zA-Z_][a-zA-Z0-9_]*
 
-// Strings: single or double quoted with proper escaping
-SINGLE_QUOTED_STRING='([^'\\]|\\.)*'
-DOUBLE_QUOTED_STRING="([^\"\\]|\\.)*"
-STRING={SINGLE_QUOTED_STRING}|{DOUBLE_QUOTED_STRING}
+STRING=\"[^\"]*\"
 
 // Numbers
-INTEGER=\d+
+//INTEGER=\d+
+
+DATE=\d{4}-\d{2}-\d{2}
 
 // Punctuation
-LBRACE=\{
-RBRACE=\}
+L_CURLY=\{
+R_CURLY=\}
 DOT=\.
 
 %%
 
-<YYINITIAL> {TASK_KEYWORD}                                  { return TJTypes.TASK; }
-<YYINITIAL> {DEPENDS_KEYWORD}                               { return TJTypes.DEPENDS; }
-<YYINITIAL> {NOTE_KEYWORD}                                  { return TJTypes.NOTE; }
+<YYINITIAL> {END_OF_LINE_COMMENT}                           { return TJTypes.COMMENT; }
+<YYINITIAL> {TASK_KEYWORD}                                  { return TJTypes.TASK_KEYWORD; }
+<YYINITIAL> {DEPENDS_KEYWORD}                               { return TJTypes.DEPENDS_KEYWORD; }
 
-<YYINITIAL> {STRING}                                        { return TJTypes.STRING; }
-<YYINITIAL> {INTEGER}                                       { return TJTypes.INTEGER; }
+<YYINITIAL> {L_CURLY}                                       { return TJTypes.L_CURLY; }
+<YYINITIAL> {R_CURLY}                                       { return TJTypes.R_CURLY; }
+
 <YYINITIAL> {ID}                                            { return TJTypes.ID; }
-
 <YYINITIAL> {DOT}                                           { return TJTypes.DOT; }
 
+<YYINITIAL> {STRING}                                        { return TJTypes.STRING; }
 <YYINITIAL> {WHITE_SPACE}+                                  { return TokenType.WHITE_SPACE; }
-
-<YYINITIAL> {CRLF}                                          { return TokenType.WHITE_SPACE; }
 
 [^]                                                         { return TokenType.BAD_CHARACTER; }

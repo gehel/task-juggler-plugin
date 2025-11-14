@@ -12,44 +12,14 @@
   elementTypeClass="fr.ledcom.tj3.taskjugglerplugin.language.psi.TJElementType"
   tokenTypeClass="fr.ledcom.tj3.taskjugglerplugin.language.psi.TJTokenType"
 
-  tokens=[
-    space="regexp:\s+"
-    line_comment="regexp:#.*"
-    STRING="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\\"|\\\'|\\)*\")"
-    INTEGER="\d+"
-    FLOAT="\d+\.\d+"
-    // Identifiers and names
-    ID="regexp:[a-zA-Z_][a-zA-Z0-9_]*"
-
-    DOT="."
-    REL_ID_MARK='!'
-
-    BASE_DATE="regexp:\d{4}-\d{2}-\d{2}(-\d{2}:\d{2}(:\d{2})?)?"
-    DURATION_="regexp:\d+(min|h|d|w|m|y)"
-  ]
 }
+tjFile ::= item_*
+private item_ ::= (COMMENT|task)
 
+ABSOLUTE_ID ::= ID (DOT ID)+
 
-taskJugglerFile ::= (TASK|PROJECT)*
-
-TASK ::= 'task' [ID] STRING '{' task_attributes_ * '}'
-private task_attributes_ ::= (start|responsible|note|duration|depends|TASK)
-
-PROJECT ::= 'project' [ID] STRING [STRING] INTERVAL2 '{' (project_attributes_)* '}'
-private project_attributes_ ::= (currency|timezone)
-
-start ::= 'start' DATE
-responsible ::= 'responsible' ID
-note ::= 'note' STRING
-duration ::= 'duration' DURATION_
-depends ::= 'depends' (RELATIVE_ID|ABSOLUTE_ID)
-
-currency ::= 'currency' STRING
-timezone ::= 'timezone' STRING
-
-ABSOLUTE_ID ::= ID{DOT ID}*
-RELATIVE_ID ::= REL_ID_MARK ID{DOT ID}*
-
-DATE ::= ( BASE_DATE | '%' '{' BASE_DATE ('+'|'-') DURATION_ '}' )
-
-INTERVAL2 ::= DATE ('-' DATE | '+' DURATION_)
+task ::= task_header L_CURLY task_body R_CURLY
+task_header ::= TASK_KEYWORD ID STRING
+task_body ::= task_body_element | task_body_element+
+task_body_element ::= CRLF | depends
+depends ::= DEPENDS_KEYWORD (ABSOLUTE_ID|ID)

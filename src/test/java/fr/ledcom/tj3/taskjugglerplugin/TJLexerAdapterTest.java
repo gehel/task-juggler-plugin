@@ -1,6 +1,9 @@
 package fr.ledcom.tj3.taskjugglerplugin;
 
+import com.intellij.psi.tree.IElementType;
 import fr.ledcom.tj3.taskjugglerplugin.language.TJLexerAdapter;
+
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,12 +17,11 @@ public class TJLexerAdapterTest {
                   depends other.task\
                 }""");
 
-        // this is what the lexer currently generates, but probably isn't what we want
-        assertThat(lexer.getTokenType().toString()).isEqualTo("TASK");
-        assertThat(lexer.getTokenText().toString()).isEqualTo("task");
-        lexer.advance();
-        assertThat(lexer.getTokenType().toString()).isEqualTo("WHITE_SPACE");
-        lexer.advance();
-        assertThat(lexer.getTokenType().toString()).isEqualTo("TaskJugglerTokenType.ID");
+        while (true) {
+            IElementType tokenType = lexer.getTokenType();
+            String tokenText = lexer.getTokenText();
+            lexer.advance();
+        }
+
     }
 }

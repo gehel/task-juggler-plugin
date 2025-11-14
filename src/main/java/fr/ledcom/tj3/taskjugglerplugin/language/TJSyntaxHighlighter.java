@@ -30,12 +30,12 @@ public class TJSyntaxHighlighter extends SyntaxHighlighterBase {
 
     @Override
     public TextAttributesKey @NotNull [] getTokenHighlights(IElementType tokenType) {
-        if (tokenType.equals(TJTypes.LINE_COMMENT)) {
-            return COMMENT_KEYS;
-        }
-        if (List.of(TJTypes.ID, TJTypes.ABSOLUTE_ID, TJTypes.RELATIVE_ID).contains(tokenType)) {
-            return ID_KEYS;
-        }
+//        if (tokenType.equals(TJTypes.LINE_COMMENT)) {
+//            return COMMENT_KEYS;
+//        }
+//        if (List.of(TJTypes.ID, TJTypes.ABSOLUTE_ID, TJTypes.RELATIVE_ID).contains(tokenType)) {
+//            return ID_KEYS;
+//        }
         return EMPTY_KEYS;
     }
 }
