@@ -14,12 +14,19 @@
 
 }
 tjFile ::= item_*
-private item_ ::= (COMMENT|task)
+private item_ ::= (COMMENT|CRLF|task)
 
-ABSOLUTE_ID ::= ID (DOT ID)+
+absolute_id ::= ID (DOT ID)*
+relative_id ::= BANG+ absolute_id
 
 task ::= task_header L_CURLY task_body R_CURLY
 task_header ::= TASK_KEYWORD ID STRING
-task_body ::= task_body_element | task_body_element+
-task_body_element ::= CRLF | depends
-depends ::= DEPENDS_KEYWORD (ABSOLUTE_ID|ID)
+task_body ::=  task_body_element*
+task_body_element ::= CRLF | depends | duration | note | responsible | start | task
+
+depends ::= DEPENDS_KEYWORD depends_list
+depends_list ::= ((relative_id|absolute_id) COMA depends_list)|(relative_id|absolute_id)
+duration ::= DURATION_KEYWORD INTEGER DURATION_UNIT
+note ::= NOTE_KEYWORD STRING
+responsible ::= RESPONSIBLE_KEYWORD ID
+start ::= START_KEYWORD DATE
