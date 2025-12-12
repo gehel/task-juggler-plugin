@@ -18,6 +18,13 @@ public class TJColorSettingsPage implements ColorSettingsPage {
 
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
             new AttributesDescriptor("Comment", TJSyntaxHighlighter.COMMENT),
+            new AttributesDescriptor("Keyword", TJSyntaxHighlighter.KEYWORD),
+            new AttributesDescriptor("ID", TJSyntaxHighlighter.ID),
+            new AttributesDescriptor("String", TJSyntaxHighlighter.STRING),
+            new AttributesDescriptor("Coma", TJSyntaxHighlighter.COMA),
+            new AttributesDescriptor("Brace", TJSyntaxHighlighter.BRACE),
+            new AttributesDescriptor("Dot", TJSyntaxHighlighter.DOT),
+            new AttributesDescriptor("Bad value", TJSyntaxHighlighter.BAD_CHARACTER),
     };
 
     @Override
@@ -35,6 +42,8 @@ public class TJColorSettingsPage implements ColorSettingsPage {
         return """
                 task my_task "some_task" {
                   note "some note"
+                  depends !!some.other.task
+                  duration 2w
                 }
                 """;
     }
