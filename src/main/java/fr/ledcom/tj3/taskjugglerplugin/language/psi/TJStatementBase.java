@@ -16,6 +16,9 @@ public interface TJStatementBase extends PsiElement {
     /** Text of the keyword, e.g. {@code task}. */
     @NotNull String getKeywordName();
 
+    /** The block of attributes of this statement (the trailing {@code { ... }}), if any. */
+    @Nullable TJBlock getBody();
+
     /** Statement whose block contains this statement, or {@code null} at the top level of a file. */
     @Nullable TJStatement getParentStatement();
 

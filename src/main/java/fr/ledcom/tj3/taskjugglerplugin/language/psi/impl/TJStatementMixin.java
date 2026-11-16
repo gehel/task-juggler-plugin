@@ -7,14 +7,23 @@ import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.util.PsiTreeUtil;
+import fr.ledcom.tj3.taskjugglerplugin.language.psi.TJBlock;
 import fr.ledcom.tj3.taskjugglerplugin.language.psi.TJStatement;
 import fr.ledcom.tj3.taskjugglerplugin.language.psi.TJStatementBase;
 import fr.ledcom.tj3.taskjugglerplugin.language.psi.TJStatementHead;
 import fr.ledcom.tj3.taskjugglerplugin.language.psi.TJTypes;
 import fr.ledcom.tj3.taskjugglerplugin.metadata.KeywordInfo;
 import fr.ledcom.tj3.taskjugglerplugin.metadata.KeywordRegistry;
+import com.intellij.ide.projectView.PresentationData;
+import com.intellij.navigation.ItemPresentation;
+import fr.ledcom.tj3.taskjugglerplugin.TJIcons;
+import fr.ledcom.tj3.taskjugglerplugin.language.psi.TJIdRef;
+import fr.ledcom.tj3.taskjugglerplugin.language.semantics.PropertyKind;
+import fr.ledcom.tj3.taskjugglerplugin.language.semantics.TJSemantics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.swing.Icon;
 
 public abstract class TJStatementMixin extends ASTWrapperPsiElement implements TJStatementBase {
 
@@ -41,6 +50,15 @@ public abstract class TJStatementMixin extends ASTWrapperPsiElement implements T
     }
 
     @Override
+    public @Nullable TJBlock getBody() {
+        PsiElement last = getLastChild();
+        while (last instanceof com.intellij.psi.PsiWhiteSpace || last instanceof com.intellij.psi.PsiComment) {
+            last = last.getPrevSibling();
+        }
+        return last instanceof TJBlock block ? block : null;
+    }
+
+    @Override
     public @Nullable TJStatement getParentStatement() {
         return PsiTreeUtil.getParentOfType(this, TJStatement.class, true);
     }
@@ -62,6 +80,24 @@ public abstract class TJStatementMixin extends ASTWrapperPsiElement implements T
     public @Nullable String getBlockContextId() {
         KeywordInfo info = getKeywordInfo();
         return info == null ? null : info.id();
+    }
+
+    @Override
+    public ItemPresentation getPresentation() {
+        TJStatement self = (TJStatement) this;
+        PropertyKind kind = TJSemantics.declarationKind(self);
+        TJIdRef id = TJSemantics.declaredId(self);
+        String name = TJSemantics.declaredName(self);
+        StringBuilder text = new StringBuilder();
+        if (id != null) text.append(id.getText());
+        if (name != null && !name.isEmpty()) {
+            if (!text.isEmpty()) text.append(" ");
+            text.append(id != null ? "(" + name + ")" : name);
+        }
+        if (text.isEmpty()) text.append(getKeywordName());
+        String location = kind != null ? getKeywordName() : null;
+        Icon icon = kind != null ? TJIcons.forKind(kind) : null;
+        return new PresentationData(text.toString(), location, icon, null);
     }
 
     @Override

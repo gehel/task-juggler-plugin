@@ -1,0 +1,13 @@
+project p "P" 2024-01-01 +1m {
+  timezone "Europe/Paris"
+}
+task t "T" {
+  task sub "Sub" {
+    effort 2d
+    allocate dev1, dev2
+  }
+}
+taskreport r "" {
+  columns name { title "Name" },
+          start, end
+}

@@ -34,6 +34,6 @@ public class TjFileType extends LanguageFileType {
 
     @Override
     public Icon getIcon() {
-        return null;
+        return fr.ledcom.tj3.taskjugglerplugin.TJIcons.FILE;
     }
 }

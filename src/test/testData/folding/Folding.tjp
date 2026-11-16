@@ -1,0 +1,11 @@
+<fold text='/*...*/'>/* a
+   comment */</fold>
+task t "T" <fold text='{...}'>{
+  note <fold text='-8<- Some text... ->8-'>-8<-
+    Some text
+  ->8-</fold>
+  limits { dailymax 4h }
+}</fold>
+macro m <fold text='[...]'>[
+  effort 1d
+]</fold>

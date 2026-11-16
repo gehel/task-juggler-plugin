@@ -26,18 +26,50 @@
                 implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.psi.TjFileType"
                 fieldName="INSTANCE"
                 language="TaskJuggler"
-                extensions="tjp" />
+                extensions="tjp;tji"/>
         <lang.parserDefinition
                 language="TaskJuggler"
-                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.TJParserDefinition" />
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.TJParserDefinition"/>
+
+        <!-- Highlighting -->
         <lang.syntaxHighlighterFactory
                 language="TaskJuggler"
-                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.highlighting.TJSyntaxHighlighterFactory" />
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.highlighting.TJSyntaxHighlighterFactory"/>
         <colorSettingsPage
-                implementation="fr.ledcom.tj3.taskjugglerplugin.language.highlighting.TJColorSettingsPage" />
+                implementation="fr.ledcom.tj3.taskjugglerplugin.language.highlighting.TJColorSettingsPage"/>
         <annotator
                 language="TaskJuggler"
                 implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.highlighting.TJHighlightingAnnotator"/>
+
+        <!-- Editor -->
+        <lang.commenter
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.editor.TJCommenter"/>
+        <lang.braceMatcher
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.editor.TJBraceMatcher"/>
+        <lang.quoteHandler
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.editor.TJQuoteHandler"/>
+        <lang.foldingBuilder
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.editor.TJFoldingBuilder"/>
+        <lang.psiStructureViewFactory
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.structure.TJStructureViewFactory"/>
+        <breadcrumbsInfoProvider
+                implementation="fr.ledcom.tj3.taskjugglerplugin.language.editor.TJBreadcrumbsProvider"/>
+
+        <!-- Formatting -->
+        <lang.formatter
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.formatter.TJFormattingModelBuilder"/>
+        <codeStyleSettingsProvider
+                implementation="fr.ledcom.tj3.taskjugglerplugin.language.formatter.TJCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider
+                implementation="fr.ledcom.tj3.taskjugglerplugin.language.formatter.TJLanguageCodeStyleSettingsProvider"/>
+
+        <!-- Completion -->
         <completion.contributor
                 language="TaskJuggler"
                 implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.TJCompletionContributor"/>
