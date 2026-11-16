@@ -76,6 +76,11 @@
         <gotoSymbolContributor
                 implementation="fr.ledcom.tj3.taskjugglerplugin.language.references.TJGotoSymbolContributor"/>
 
+        <!-- Documentation -->
+        <lang.documentationProvider
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.documentation.TJDocumentationProvider"/>
+
         <!-- Formatting -->
         <lang.formatter
                 language="TaskJuggler"
