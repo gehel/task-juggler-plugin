@@ -76,6 +76,34 @@
         <gotoSymbolContributor
                 implementation="fr.ledcom.tj3.taskjugglerplugin.language.references.TJGotoSymbolContributor"/>
 
+        <!-- Inspections -->
+        <annotator
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.inspections.TJSyntaxAnnotator"/>
+        <localInspection language="TaskJuggler" groupName="TaskJuggler" enabledByDefault="true" level="ERROR"
+                         shortName="TJInvalidKeyword" displayName="Invalid or misplaced keyword"
+                         implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.inspections.TJInvalidKeywordInspection"/>
+        <localInspection language="TaskJuggler" groupName="TaskJuggler" enabledByDefault="true" level="ERROR"
+                         shortName="TJUnresolvedReference" displayName="Unresolved reference"
+                         implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.inspections.TJUnresolvedReferenceInspection"/>
+        <localInspection language="TaskJuggler" groupName="TaskJuggler" enabledByDefault="true" level="ERROR"
+                         shortName="TJDuplicateDeclaration" displayName="Duplicate declaration"
+                         implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.inspections.TJDuplicateDeclarationInspection"/>
+        <localInspection language="TaskJuggler" groupName="TaskJuggler" enabledByDefault="true" level="WARNING"
+                         shortName="TJDeprecatedKeyword" displayName="Deprecated keyword"
+                         implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.inspections.TJDeprecatedKeywordInspection"/>
+
+        <externalAnnotator
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.tj3.TJ3ExternalAnnotator"/>
+
+        <!-- TaskJuggler command line integration -->
+        <applicationConfigurable
+                parentId="language"
+                instance="fr.ledcom.tj3.taskjugglerplugin.tj3.TJSettingsConfigurable"
+                id="fr.ledcom.tj3.settings"
+                displayName="TaskJuggler"/>
+
         <!-- Documentation -->
         <lang.documentationProvider
                 language="TaskJuggler"

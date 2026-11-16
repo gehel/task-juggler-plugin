@@ -28,8 +28,8 @@ import java.util.Set;
 /**
  * Collects the properties declared in TaskJuggler files.
  * <p>
- * TaskJuggler projects consist of a main {@code .tjp} file and included {@code .tji} files, so declarations are looked
- * up in all TaskJuggler files of the project, preferring the file of the reference.
+ * TaskJuggler projects consist of a main {@code .tjp} file and included {@code .tji} files: declarations are looked
+ * up in the files of the same TaskJuggler project (see {@link TJIncludeGraph}), preferring the file of the reference.
  */
 public final class TJDeclarations {
 
@@ -49,16 +49,20 @@ public final class TJDeclarations {
         });
     }
 
-    /** Declarations of all TaskJuggler files of the project; those of {@code preferred} first. */
+    /**
+     * Declarations visible from {@code preferred} (its project: main file and includes), those of {@code preferred}
+     * first; or of all TaskJuggler files of the IDE project if {@code preferred} is null.
+     */
     public static @NotNull List<TJDeclaration> inProject(@NotNull Project project, @Nullable PsiFile preferred) {
-        List<TJDeclaration> all = allInProject(project);
-        if (preferred == null) return all;
+        if (preferred == null) return allInProject(project);
         // During completion 'preferred' is a copy of the edited file: use its declarations instead of the original's.
         PsiFile original = preferred.getOriginalFile();
         List<TJDeclaration> result = new ArrayList<>(inFile(preferred));
-        for (TJDeclaration d : all) {
-            PsiFile file = d.element().getContainingFile();
-            if (file != original && file != preferred) result.add(d);
+        PsiManager manager = PsiManager.getInstance(project);
+        for (VirtualFile virtualFile : TJIncludeGraph.scope(original)) {
+            if (virtualFile.equals(original.getVirtualFile())) continue;
+            PsiFile file = manager.findFile(virtualFile);
+            if (file != null) result.addAll(inFile(file));
         }
         return result;
     }
