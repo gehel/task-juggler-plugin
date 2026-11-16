@@ -65,9 +65,9 @@ public class TJSyntaxHighlighter extends SyntaxHighlighterBase {
                 TJTypes.END_KEYWORD,
                 TJTypes.DURATION_KEYWORD,
                 TJTypes.NOTE_KEYWORD,
-                TJTypes.RESPONSIBLE).contains(tokenType))
+                TJTypes.RESPONSIBLE_KEYWORD).contains(tokenType))
             return KEYWORD_KEYS;
-        if (List.of(TJTypes.ID, TJTypes.ABSOLUTE_ID, TJTypes.RELATIVE_ID).contains(tokenType))
+        if (List.of(TJTypes.ID).contains(tokenType))
             return ID_KEYS;
         if (tokenType.equals(TJTypes.STRING))
             return STRING_KEYS;

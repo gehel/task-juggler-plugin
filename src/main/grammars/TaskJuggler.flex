@@ -1,4 +1,4 @@
-package fr.ledcom.tj3.taskjugglerplugin.language;
+package fr.ledcom.tj3.taskjugglerplugin.language.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
@@ -7,6 +7,7 @@ import fr.ledcom.tj3.taskjugglerplugin.language.psi.TJTypes;
 
 %%
 
+%public
 %class TaskJugglerLexer
 %implements FlexLexer
 %unicode
