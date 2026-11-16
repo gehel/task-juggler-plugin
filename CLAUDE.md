@@ -40,5 +40,5 @@ Adding a new language construct typically touches several files in lockstep:
 5. `psi/TJTokenSets` — update if the token is a comment/string/whitespace set used by `TJParserDefinition`.
 
 Supporting resources:
-- `src/main/resources/keywords.txt` — full list of TaskJuggler keywords (reference for which keywords still need lexer/grammar support; not loaded by code).
+- `src/main/resources/tj3/keywords.json` — keyword metadata (syntax, docs, allowed contexts/attributes, literal values) for every TaskJuggler keyword, loaded by `metadata.KeywordRegistry`. Generated, do not edit by hand: regenerate with `ruby tools/extract-keywords.rb > src/main/resources/tj3/keywords.json` (uses the locally installed TaskJuggler's syntax rules, the same data as `tj3man`). Keyword variants have ids like `account.task` (name `account`, valid inside `task`); the top level is the pseudo-context `properties` plus `project`.
 - `src/main/resources/example.tjp` — sample TaskJuggler file useful for manual testing in `runIde`.
