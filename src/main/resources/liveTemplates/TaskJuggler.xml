@@ -1,0 +1,61 @@
+<templateSet group="TaskJuggler">
+  <template name="project" value="project $ID$ &quot;$NAME$&quot; $START$ +$DURATION$ {&#10;  timezone &quot;$TZ$&quot;&#10;  timeformat &quot;%Y-%m-%d&quot;&#10;  $END$&#10;}" description="Project header" toReformat="true" toShortenFQNames="false">
+    <variable name="ID" expression="" defaultValue="&quot;prj&quot;" alwaysStopAt="true"/>
+    <variable name="NAME" expression="" defaultValue="&quot;Project&quot;" alwaysStopAt="true"/>
+    <variable name="START" expression="date(&quot;yyyy-MM-dd&quot;)" defaultValue="" alwaysStopAt="true"/>
+    <variable name="DURATION" expression="" defaultValue="&quot;6m&quot;" alwaysStopAt="true"/>
+    <variable name="TZ" expression="" defaultValue="&quot;Europe/Paris&quot;" alwaysStopAt="true"/>
+    <context><option name="TaskJuggler" value="true"/></context>
+  </template>
+  <template name="task" value="task $ID$ &quot;$NAME$&quot; {&#10;  $END$&#10;}" description="Task" toReformat="true" toShortenFQNames="false">
+    <variable name="ID" expression="" defaultValue="" alwaysStopAt="true"/>
+    <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="TaskJuggler" value="true"/></context>
+  </template>
+  <template name="taske" value="task $ID$ &quot;$NAME$&quot; {&#10;  effort $EFFORT$&#10;  allocate $RESOURCE$&#10;  $END$&#10;}" description="Task with effort and allocation" toReformat="true" toShortenFQNames="false">
+    <variable name="ID" expression="" defaultValue="" alwaysStopAt="true"/>
+    <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true"/>
+    <variable name="EFFORT" expression="" defaultValue="&quot;1d&quot;" alwaysStopAt="true"/>
+    <variable name="RESOURCE" expression="complete()" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="TaskJuggler" value="true"/></context>
+  </template>
+  <template name="milestone" value="task $ID$ &quot;$NAME$&quot; {&#10;  milestone&#10;  depends $DEPENDS$&#10;  $END$&#10;}" description="Milestone task" toReformat="true" toShortenFQNames="false">
+    <variable name="ID" expression="" defaultValue="" alwaysStopAt="true"/>
+    <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true"/>
+    <variable name="DEPENDS" expression="complete()" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="TaskJuggler" value="true"/></context>
+  </template>
+  <template name="resource" value="resource $ID$ &quot;$NAME$&quot; {&#10;  $END$&#10;}" description="Resource" toReformat="true" toShortenFQNames="false">
+    <variable name="ID" expression="" defaultValue="" alwaysStopAt="true"/>
+    <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="TaskJuggler" value="true"/></context>
+  </template>
+  <template name="account" value="account $ID$ &quot;$NAME$&quot;$END$" description="Account" toReformat="true" toShortenFQNames="false">
+    <variable name="ID" expression="" defaultValue="" alwaysStopAt="true"/>
+    <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="TaskJuggler" value="true"/></context>
+  </template>
+  <template name="journal" value="journalentry $DATE$ &quot;$HEADLINE$&quot; {&#10;  author $AUTHOR$&#10;  summary -8&lt;-&#10;    $END$&#10;  -&gt;8-&#10;}" description="Journal entry" toReformat="true" toShortenFQNames="false">
+    <variable name="DATE" expression="date(&quot;yyyy-MM-dd&quot;)" defaultValue="" alwaysStopAt="true"/>
+    <variable name="HEADLINE" expression="" defaultValue="" alwaysStopAt="true"/>
+    <variable name="AUTHOR" expression="complete()" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="TaskJuggler" value="true"/></context>
+  </template>
+  <template name="macro" value="macro $ID$ [&#10;  $END$&#10;]" description="Macro definition" toReformat="false" toShortenFQNames="false">
+    <variable name="ID" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="TaskJuggler" value="true"/></context>
+  </template>
+  <template name="taskreport" value="taskreport $ID$ &quot;$FILE$&quot; {&#10;  formats html&#10;  columns name, start, end, effort, chart&#10;  $END$&#10;}" description="Task report" toReformat="true" toShortenFQNames="false">
+    <variable name="ID" expression="" defaultValue="" alwaysStopAt="true"/>
+    <variable name="FILE" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="TaskJuggler" value="true"/></context>
+  </template>
+  <template name="resourcereport" value="resourcereport $ID$ &quot;$FILE$&quot; {&#10;  formats html&#10;  columns name, effort, chart&#10;  loadunit days&#10;  hidetask 1&#10;  $END$&#10;}" description="Resource report" toReformat="true" toShortenFQNames="false">
+    <variable name="ID" expression="" defaultValue="" alwaysStopAt="true"/>
+    <variable name="FILE" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context><option name="TaskJuggler" value="true"/></context>
+  </template>
+  <template name="ml" value="-8&lt;-&#10;  $END$&#10;-&gt;8-" description="Multi-line string" toReformat="true" toShortenFQNames="false">
+    <context><option name="TaskJuggler" value="true"/></context>
+  </template>
+</templateSet>

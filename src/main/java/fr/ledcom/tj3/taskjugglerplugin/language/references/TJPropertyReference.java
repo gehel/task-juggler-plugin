@@ -100,10 +100,16 @@ public class TJPropertyReference extends PsiPolyVariantReferenceBase<TJIdRef> {
             } else {
                 name = d.fullId();
             }
-            if (name.startsWith("<") || d.element() == ref) continue;
+            if (name.startsWith("<") || d.element() == ref || encloses(d, ref)) continue;
             variants.putIfAbsent(name, lookup(name, d));
         }
         return variants.values().toArray();
+    }
+
+    /** A task cannot depend on itself or on its parents. */
+    private static boolean encloses(TJDeclaration declaration, TJIdRef ref) {
+        PsiElement statement = declaration.element().getParent();
+        return statement != null && com.intellij.psi.util.PsiTreeUtil.isAncestor(statement, ref, true);
     }
 
     private boolean isQualified() {

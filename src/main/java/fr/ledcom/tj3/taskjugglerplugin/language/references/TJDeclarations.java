@@ -52,11 +52,13 @@ public final class TJDeclarations {
     /** Declarations of all TaskJuggler files of the project; those of {@code preferred} first. */
     public static @NotNull List<TJDeclaration> inProject(@NotNull Project project, @Nullable PsiFile preferred) {
         List<TJDeclaration> all = allInProject(project);
-        PsiFile original = preferred == null ? null : preferred.getOriginalFile();
-        if (original == null) return all;
-        List<TJDeclaration> result = new ArrayList<>(inFile(original));
+        if (preferred == null) return all;
+        // During completion 'preferred' is a copy of the edited file: use its declarations instead of the original's.
+        PsiFile original = preferred.getOriginalFile();
+        List<TJDeclaration> result = new ArrayList<>(inFile(preferred));
         for (TJDeclaration d : all) {
-            if (d.element().getContainingFile() != original) result.add(d);
+            PsiFile file = d.element().getContainingFile();
+            if (file != original && file != preferred) result.add(d);
         }
         return result;
     }

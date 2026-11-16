@@ -88,6 +88,10 @@
         <!-- Completion -->
         <completion.contributor
                 language="TaskJuggler"
-                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.TJCompletionContributor"/>
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.completion.TJCompletionContributor"/>
+        <liveTemplateContext
+                contextId="TaskJuggler"
+                implementation="fr.ledcom.tj3.taskjugglerplugin.language.completion.TJTemplateContextType"/>
+        <defaultLiveTemplates file="/liveTemplates/TaskJuggler.xml"/>
     </extensions>
 </idea-plugin>
