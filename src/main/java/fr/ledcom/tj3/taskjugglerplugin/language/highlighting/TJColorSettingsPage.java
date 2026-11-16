@@ -1,4 +1,4 @@
-package fr.ledcom.tj3.taskjugglerplugin.language;
+package fr.ledcom.tj3.taskjugglerplugin.language.highlighting;
 
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
@@ -54,20 +54,57 @@ public class TJColorSettingsPage implements ColorSettingsPage {
         return new TJSyntaxHighlighter();
     }
 
+    private static final Map<String, TextAttributesKey> TAGS = Map.of(
+            "prop", TJSyntaxHighlighter.PROPERTY_KEYWORD,
+            "decl", TJSyntaxHighlighter.DECLARATION,
+            "ref", TJSyntaxHighlighter.REFERENCE,
+            "value", TJSyntaxHighlighter.VALUE,
+            "attr", TJSyntaxHighlighter.CUSTOM_ATTRIBUTE,
+            "func", TJSyntaxHighlighter.FUNCTION,
+            "macro", TJSyntaxHighlighter.MACRO_CALL);
+
     @Override
     public @NonNls @NotNull String getDemoText() {
         return """
-                task my_task "some_task" {
-                  note "some note"
-                  depends !!some.other.task
-                  duration 2w
+                /* Project header */
+                project <decl>acme</decl> "ACME" 2024-01-01 +6m {
+                  timezone "Europe/Paris"
+                  <prop>scenario</prop> <decl>plan</decl> "Plan" {
+                    <prop>scenario</prop> <decl>delayed</decl> "Delayed"
+                  }
+                  extend resource { text <decl>Phone</decl> "Phone" }
+                }
+                flags <decl>team</decl>
+                macro <decl>devs</decl> [
+                  allocate dev1
+                ]
+                <prop>resource</prop> <decl>dev1</decl> "Alice" {
+                  <attr>Phone</attr> "x100"
+                  limits { dailymax 6.4h }
+                  workinghours <value>sat</value>, <value>sun</value> <value>off</value>
+                }
+                <prop>task</prop> <decl>spec</decl> "Specification" {
+                  effort 20d
+                  ${<macro>devs</macro>}
+                  depends !<ref>kickoff</ref>, <ref>other.task</ref>
+                  delayed:start 2024-01-20-9:00
+                  scheduling <value>asap</value>
+                  note -8<-
+                    Multi-line text
+                  ->8-
+                }
+                <prop>taskreport</prop> <decl>overview</decl> "" {
+                  formats <value>html</value>  # line comment
+                  columns <value>name</value>, <value>start</value> { title 'Start' }
+                  hidetask ~(<func>isleaf</func>() & plan.end < %{${<macro>now</macro>} - 1w})
+                  loadunit $(UNIT)
                 }
                 """;
     }
 
     @Override
     public @Nullable Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
-        return null;
+        return TAGS;
     }
 
     @Override

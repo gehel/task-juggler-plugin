@@ -1,4 +1,4 @@
-package fr.ledcom.tj3.taskjugglerplugin.language;
+package fr.ledcom.tj3.taskjugglerplugin.language.highlighting;
 
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import fr.ledcom.tj3.taskjugglerplugin.language.TJLexerAdapter;
 import fr.ledcom.tj3.taskjugglerplugin.language.psi.TJTokenSets;
 import fr.ledcom.tj3.taskjugglerplugin.language.psi.TJTypes;
 import org.jetbrains.annotations.NotNull;

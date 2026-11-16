@@ -85,11 +85,13 @@ private list_item_block ::= <<blockFollowedByComma>> block
 
 literal ::= STRING | MULTILINE_STRING | DATE | TIME | DURATION | FLOAT | INTEGER | MACRO_BODY | ENV_VAR {
   mixin="fr.ledcom.tj3.taskjugglerplugin.language.psi.impl.TJLiteralMixin"
+  implements="fr.ledcom.tj3.taskjugglerplugin.language.psi.TJLiteralBase"
 }
 
 // task / resource / account ... identifiers, possibly hierarchical (a.b.c) or relative (!!a.b).
 id_ref ::= BANG* identifier (DOT identifier)* {
   mixin="fr.ledcom.tj3.taskjugglerplugin.language.psi.impl.TJIdRefMixin"
+  implements="fr.ledcom.tj3.taskjugglerplugin.language.psi.TJIdRefBase"
 }
 private identifier ::= ID | KEYWORD
 

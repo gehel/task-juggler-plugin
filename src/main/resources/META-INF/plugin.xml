@@ -32,9 +32,12 @@
                 implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.TJParserDefinition" />
         <lang.syntaxHighlighterFactory
                 language="TaskJuggler"
-                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.TJSyntaxHighlighterFactory" />
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.highlighting.TJSyntaxHighlighterFactory" />
         <colorSettingsPage
-                implementation="fr.ledcom.tj3.taskjugglerplugin.language.TJColorSettingsPage" />
+                implementation="fr.ledcom.tj3.taskjugglerplugin.language.highlighting.TJColorSettingsPage" />
+        <annotator
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.highlighting.TJHighlightingAnnotator"/>
         <completion.contributor
                 language="TaskJuggler"
                 implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.TJCompletionContributor"/>

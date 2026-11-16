@@ -1,4 +1,4 @@
-package fr.ledcom.tj3.taskjugglerplugin.language;
+package fr.ledcom.tj3.taskjugglerplugin.language.highlighting;
 
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;
