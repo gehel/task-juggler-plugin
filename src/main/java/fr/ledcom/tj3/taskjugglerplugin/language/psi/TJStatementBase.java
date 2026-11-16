@@ -1,5 +1,6 @@
 package fr.ledcom.tj3.taskjugglerplugin.language.psi;
 
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import fr.ledcom.tj3.taskjugglerplugin.metadata.KeywordInfo;
 import org.jetbrains.annotations.NotNull;
@@ -8,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Hand-written API of {@link TJStatement}: a statement is {@code [scenario:]keyword arguments* [{ statements }]}.
  */
-public interface TJStatementBase extends PsiElement {
+public interface TJStatementBase extends NavigatablePsiElement {
 
     /** The keyword (or user defined attribute) token starting this statement. */
     @NotNull PsiElement getKeywordElement();

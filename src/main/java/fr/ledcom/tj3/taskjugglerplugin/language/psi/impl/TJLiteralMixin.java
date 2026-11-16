@@ -2,6 +2,7 @@ package fr.ledcom.tj3.taskjugglerplugin.language.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import fr.ledcom.tj3.taskjugglerplugin.language.psi.TJLiteral;
 import fr.ledcom.tj3.taskjugglerplugin.language.psi.TJLiteralBase;
 import fr.ledcom.tj3.taskjugglerplugin.language.psi.TJTypes;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +12,11 @@ public abstract class TJLiteralMixin extends ASTWrapperPsiElement implements TJL
 
     protected TJLiteralMixin(@NotNull ASTNode node) {
         super(node);
+    }
+
+    @Override
+    public com.intellij.psi.PsiReference @NotNull [] getReferences() {
+        return fr.ledcom.tj3.taskjugglerplugin.language.references.TJIncludeReferences.of((TJLiteral) this);
     }
 
     public boolean isString() {

@@ -63,7 +63,9 @@ statement ::= statement_head <<enterStatement>> argument* block? <<exitStatement
   mixin="fr.ledcom.tj3.taskjugglerplugin.language.psi.impl.TJStatementMixin"
   implements="fr.ledcom.tj3.taskjugglerplugin.language.psi.TJStatementBase"
 }
-statement_head ::= scenario_prefix? (KEYWORD | ID)
+statement_head ::= scenario_prefix? (KEYWORD | ID) {
+  mixin="fr.ledcom.tj3.taskjugglerplugin.language.psi.impl.TJStatementHeadMixin"
+}
 scenario_prefix ::= ID_WITH_COLON {
   mixin="fr.ledcom.tj3.taskjugglerplugin.language.psi.impl.TJScenarioPrefixMixin"
 }

@@ -17,7 +17,7 @@ public enum PropertyKind {
     ATTRIBUTE("attribute", false);
 
     private final String displayName;
-    /** Properties form a hierarchy whose ids are qualified by their parents' ids (a.b.c). */
+    /** Project properties (as opposed to macros, flags, attributes). */
     private final boolean hierarchical;
 
     PropertyKind(String displayName, boolean hierarchical) {
@@ -29,7 +29,13 @@ public enum PropertyKind {
         return displayName;
     }
 
+    /** Project properties (as opposed to macros, flags, attributes): their keyword is highlighted specially. */
     public boolean isHierarchical() {
         return hierarchical;
+    }
+
+    /** Ids are qualified by the ids of the enclosing properties ({@code parent.child}); others are global. */
+    public boolean hasQualifiedIds() {
+        return this == TASK || this == REPORT;
     }
 }

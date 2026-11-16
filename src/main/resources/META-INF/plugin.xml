@@ -60,6 +60,22 @@
         <breadcrumbsInfoProvider
                 implementation="fr.ledcom.tj3.taskjugglerplugin.language.editor.TJBreadcrumbsProvider"/>
 
+        <!-- References and navigation -->
+        <lang.elementManipulator
+                forClass="fr.ledcom.tj3.taskjugglerplugin.language.psi.TJLiteral"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.references.TJLiteralManipulator"/>
+        <lang.findUsagesProvider
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.references.TJFindUsagesProvider"/>
+        <lang.namesValidator
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.references.TJNamesValidator"/>
+        <lang.refactoringSupport
+                language="TaskJuggler"
+                implementationClass="fr.ledcom.tj3.taskjugglerplugin.language.references.TJRefactoringSupportProvider"/>
+        <gotoSymbolContributor
+                implementation="fr.ledcom.tj3.taskjugglerplugin.language.references.TJGotoSymbolContributor"/>
+
         <!-- Formatting -->
         <lang.formatter
                 language="TaskJuggler"
