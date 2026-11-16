@@ -1,0 +1,16 @@
+project ${NAME} "${NAME}" ${YEAR}-${MONTH}-${DAY} +6m {
+  timezone "Europe/Paris"
+  timeformat "%Y-%m-%d"
+  currency "EUR"
+}
+
+resource team "Team" {
+}
+
+task ${NAME} "${NAME}" {
+}
+
+taskreport overview "Overview" {
+  formats html
+  columns bsi, name, start, end, effort, chart
+}

@@ -12,7 +12,21 @@
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-description -->
-    <description>IntelliJ plugin to support Task Juggler files.</description>
+    <description><![CDATA[
+Language support for <a href="https://taskjuggler.org/">TaskJuggler</a> project files (<code>.tjp</code>, <code>.tji</code>).
+<ul>
+  <li>Syntax and semantic highlighting of keywords, declarations, references, values, macros, dates and durations</li>
+  <li>Context aware completion of keywords, attribute values and references to tasks, resources, accounts, shifts,
+      scenarios, flags and macros; live templates</li>
+  <li>Go to declaration, find usages and rename for tasks (including relative <code>!</code> ids), resources,
+      accounts, shifts, scenarios, reports, flags, macros and user defined attributes, across included files</li>
+  <li>Quick documentation from the TaskJuggler syntax reference</li>
+  <li>Inspections for misplaced or unknown keywords, unresolved references, duplicate ids and deprecated keywords,
+      plus the errors reported by <code>tj3 --check-syntax</code></li>
+  <li>Structure view, folding, breadcrumbs, formatter, comments and brace matching</li>
+  <li>Run configuration to schedule projects and generate reports with <code>tj3</code></li>
+</ul>
+]]></description>
 
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
@@ -104,6 +118,11 @@
                 id="fr.ledcom.tj3.settings"
                 displayName="TaskJuggler"/>
 
+        <configurationType implementation="fr.ledcom.tj3.taskjugglerplugin.tj3.run.TJ3RunConfigurationType"/>
+        <runConfigurationProducer implementation="fr.ledcom.tj3.taskjugglerplugin.tj3.run.TJ3RunConfigurationProducer"/>
+        <internalFileTemplate name="TaskJuggler Project"/>
+        <internalFileTemplate name="TaskJuggler Include File"/>
+
         <!-- Documentation -->
         <lang.documentationProvider
                 language="TaskJuggler"
@@ -127,4 +146,10 @@
                 implementation="fr.ledcom.tj3.taskjugglerplugin.language.completion.TJTemplateContextType"/>
         <defaultLiveTemplates file="/liveTemplates/TaskJuggler.xml"/>
     </extensions>
+
+    <actions>
+        <action id="TaskJuggler.NewFile" class="fr.ledcom.tj3.taskjugglerplugin.tj3.run.TJCreateFileAction">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>
+        </action>
+    </actions>
 </idea-plugin>

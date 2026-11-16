@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-An IntelliJ Platform plugin adding language support for [TaskJuggler](https://taskjuggler.org/) project files (`.tjp`): lexer, parser/PSI, syntax highlighting, color settings page, and (early-stage) completion. Written in Java 21, built with the IntelliJ Platform Gradle Plugin 2.x against IntelliJ IDEA Community 2025.1 (`sinceBuild = 251`).
+An IntelliJ Platform plugin adding language support for [TaskJuggler](https://taskjuggler.org/) project files (`.tjp`, `.tji`): highlighting, completion, navigation/rename, quick docs, inspections, formatter, structure view, and `tj3` integration (syntax check, run configuration). Java 21, IntelliJ Platform Gradle Plugin 2.x, targets IntelliJ IDEA 2025.1+ (`sinceBuild = 251`).
 
 TaskJuggler language reference: https://taskjuggler.org/tj3/manual/index.html, also available locally via `tj3man` (`tj3man` lists all keywords; `tj3man <keyword>` shows syntax, context, attributes and examples for one keyword). Use it as the source of truth for syntax when extending the lexer/grammar.
 
@@ -29,16 +29,17 @@ Generated classes: `language.lexer.TaskJugglerLexer`, `TJParser`, `language.psi.
 
 ## Architecture
 
-All sources are under `src/main/java/fr/ledcom/tj3/taskjugglerplugin/`. Extensions are registered in `src/main/resources/META-INF/plugin.xml` under the language ID `TaskJuggler` (file type `TjFileType`, extension `tjp`).
+Sources are under `src/main/java/fr/ledcom/tj3/taskjugglerplugin/`; all extensions are registered in `src/main/resources/META-INF/plugin.xml` (language id `TaskJuggler`).
 
-Adding a new language construct typically touches several files in lockstep:
+**Metadata drives everything.** `metadata.KeywordRegistry` loads `src/main/resources/tj3/keywords.json`, generated from the installed TaskJuggler's syntax rules by `ruby tools/extract-keywords.rb > src/main/resources/tj3/keywords.json` (never edit by hand). Each keyword *variant* has an id like `account.task` (name `account`, valid inside `task`), its allowed contexts, attributes, literal values, syntax and HTML docs. The top level is the pseudo-context `properties` plus `project`. The lexer, parser, completion, docs and inspections all use it, so supporting a new TaskJuggler version is mostly re-running the script.
 
-1. `TaskJuggler.flex` — define the token macro and a `<YYINITIAL>` rule returning `TJTypes.<TOKEN>`. Keyword rules must appear **before** the generic `ID` rule (JFlex picks the first rule on equal-length matches).
-2. `TaskJuggler.bnf` — use the token and add/extend grammar rules (e.g. add to `task_body_element`). Token names in the BNF must match those returned by the lexer.
-3. Rebuild (generation runs automatically).
-4. `TJSyntaxHighlighter.getTokenHighlights` — map new token types to a `TextAttributesKey`; if a new key is added, expose it in `TJColorSettingsPage` (descriptors + demo text).
-5. `psi/TJTokenSets` — update if the token is a comment/string/whitespace set used by `TJParserDefinition`.
+**Tolerant parser.** `TaskJuggler.flex` mirrors TaskJuggler's `ProjectFileScanner.rb` (keywords = words known to the registry; a word after `.`/`!` is always `ID`). `TaskJuggler.bnf` parses every statement as `head arguments* block?`; since TaskJuggler statements have no terminator, `language.parser.TJParserUtil.argumentAllowed` decides where a statement's arguments end (keyword that can't be an argument of the current head, or a word starting a new line that doesn't continue a list/expression). Hand-written PSI behaviour lives in mixins (`language.psi.impl.*Mixin`) exposed through `TJStatementBase`, `TJIdRefBase`, `TJLiteralBase`. `TJParserTest` parses `/usr/share/doc/tj3/examples` when present and must stay error-free.
 
-Supporting resources:
-- `src/main/resources/tj3/keywords.json` — keyword metadata (syntax, docs, allowed contexts/attributes, literal values) for every TaskJuggler keyword, loaded by `metadata.KeywordRegistry`. Generated, do not edit by hand: regenerate with `ruby tools/extract-keywords.rb > src/main/resources/tj3/keywords.json` (uses the locally installed TaskJuggler's syntax rules, the same data as `tj3man`). Keyword variants have ids like `account.task` (name `account`, valid inside `task`); the top level is the pseudo-context `properties` plus `project`.
-- `src/main/resources/example.tjp` — sample TaskJuggler file useful for manual testing in `runIde`.
+**Semantics.** `language.semantics.TJSemantics` answers what a statement declares (`PropertyKind`: task, resource, account, shift, scenario, report, macro, flag, user attribute...) and what an identifier refers to, based on keyword variant ids. `language.references` builds on it:
+- `TJDeclarations` collects declarations per file (cached) with full ids (dotted for tasks/reports, flat for resources/accounts/shifts/scenarios/flags/macros, as in TaskJuggler).
+- `TJIncludeGraph` scopes lookups to one TaskJuggler project (main file + transitive `include`s); several projects can coexist in one IDE project.
+- `TJPropertyReference` (one per id segment; `!` = one level up from the enclosing task, plain ids are absolute) and `TJNameReference` (macros, `scenario:` prefixes, user attributes in statement heads). Declared ids (`TJIdRef` in declaration position) are the named elements for find usages/rename.
+
+Other packages: `highlighting` (lexer colours + `TJHighlightingAnnotator` semantic colours), `completion`, `documentation`, `inspections` (tested to report nothing on the TaskJuggler examples), `editor`, `formatter`, `structure`, `tj3` (settings, `tj3 --check-syntax` external annotator, run configuration, new-file action).
+
+Tests use the IntelliJ test framework (`BasePlatformTestCase`, `ParsingTestCase`, `LexerTestCase`); expected parser/lexer outputs live in `src/test/testData` and are created on first run when missing.

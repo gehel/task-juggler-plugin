@@ -56,7 +56,8 @@ intellijPlatform {
         }
 
         changeNotes = """
-            Initial version
+            Initial version: highlighting, completion, navigation, documentation, inspections, formatter,
+            structure view and tj3 integration for TaskJuggler files.
         """.trimIndent()
     }
     pluginVerification {
