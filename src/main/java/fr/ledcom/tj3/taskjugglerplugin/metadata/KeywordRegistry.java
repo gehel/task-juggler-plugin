@@ -39,6 +39,8 @@ public final class KeywordRegistry {
     private final Map<String, List<KeywordInfo>> byName;
     private final Set<String> keywordNames;
     private final Set<String> valueLiterals;
+    private final Map<String, Set<String>> argumentWords;
+    private final Set<String> requiringArgument;
 
     private KeywordRegistry(String tjVersion, Map<String, KeywordInfo> byId, Set<String> keywordNames,
                             Set<String> valueLiterals) {
@@ -51,6 +53,25 @@ public final class KeywordRegistry {
         this.byName = Collections.unmodifiableMap(names);
         this.keywordNames = Collections.unmodifiableSet(keywordNames);
         this.valueLiterals = Collections.unmodifiableSet(valueLiterals);
+
+        Map<String, Set<String>> words = new LinkedHashMap<>();
+        Set<String> requiring = new LinkedHashSet<>();
+        for (KeywordInfo info : byId.values()) {
+            Set<String> w = words.computeIfAbsent(info.name(), n -> new LinkedHashSet<>());
+            w.addAll(info.values());
+            for (KeywordInfo.Arg arg : info.args()) {
+                // Arguments documented by another keyword (e.g. columns <columnid>) inherit its literal values.
+                KeywordInfo argInfo = byId.get(arg.name());
+                if (argInfo != null && arg.type() == null) w.addAll(argInfo.values());
+            }
+            String syntax = info.syntax();
+            if (syntax != null && syntax.startsWith(info.name())) {
+                String rest = syntax.substring(info.name().length()).trim();
+                if (!rest.isEmpty() && !rest.startsWith("[{")) requiring.add(info.name());
+            }
+        }
+        this.argumentWords = Collections.unmodifiableMap(words);
+        this.requiringArgument = Collections.unmodifiableSet(requiring);
     }
 
     public static @NotNull KeywordRegistry getInstance() {
@@ -147,6 +168,25 @@ public final class KeywordRegistry {
     /** Words that only appear as literal values in the grammar (e.g. {@code asap}, {@code html}). */
     public boolean isValueLiteral(@NotNull String word) {
         return valueLiterals.contains(word);
+    }
+
+    /**
+     * Whether {@code word} is a literal value accepted as argument of keyword {@code keyword} (in any context),
+     * e.g. {@code headline} for {@code journalattributes} or {@code start} for {@code columns}.
+     */
+    public boolean isArgumentWord(@NotNull String keyword, @NotNull String word) {
+        Set<String> words = argumentWords.get(keyword);
+        return words != null && words.contains(word);
+    }
+
+    /** Literal values accepted by any variant of the given keyword. */
+    public @NotNull Set<String> argumentWords(@NotNull String keyword) {
+        return argumentWords.getOrDefault(keyword, Set.of());
+    }
+
+    /** Whether some variant of the keyword takes at least one argument right after the keyword. */
+    public boolean requiresArgument(@NotNull String keyword) {
+        return requiringArgument.contains(keyword);
     }
 
     public @NotNull Set<String> getKeywordNames() {

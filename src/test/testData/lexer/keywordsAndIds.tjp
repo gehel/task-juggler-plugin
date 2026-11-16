@@ -1,0 +1,5 @@
+task start "Start" {
+  depends !deliveries.start, a.end
+  delayed:effort 4d
+  Phone "x"
+}

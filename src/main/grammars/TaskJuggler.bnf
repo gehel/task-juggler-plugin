@@ -1,5 +1,6 @@
 {
   parserClass="fr.ledcom.tj3.taskjugglerplugin.TJParser"
+  parserUtilClass="fr.ledcom.tj3.taskjugglerplugin.language.parser.TJParserUtil"
 
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
@@ -12,21 +13,99 @@
   elementTypeClass="fr.ledcom.tj3.taskjugglerplugin.language.psi.TJElementType"
   tokenTypeClass="fr.ledcom.tj3.taskjugglerplugin.language.psi.TJTokenType"
 
+  tokens=[
+    COMMENT='COMMENT'
+    BLOCK_COMMENT='BLOCK_COMMENT'
+    STRING='STRING'
+    MULTILINE_STRING='MULTILINE_STRING'
+    MACRO_BODY='MACRO_BODY'
+    MACRO_CALL_START='${'
+    DATE_EXPR_START='%{'
+    MACRO_CALL_END='MACRO_CALL_END'
+    QUESTION='?'
+    ENV_VAR='ENV_VAR'
+    KEYWORD='KEYWORD'
+    ID='ID'
+    ID_WITH_COLON='ID_WITH_COLON'
+    DATE='DATE'
+    TIME='TIME'
+    DURATION='DURATION'
+    FLOAT='FLOAT'
+    INTEGER='INTEGER'
+    L_CURLY='{'
+    R_CURLY='}'
+    L_PAREN='('
+    R_PAREN=')'
+    COMMA=','
+    DOT='.'
+    BANG='!'
+    MINUS='-'
+    PLUS='+'
+    TILDE='~'
+    AT='@'
+    OPERATOR='OPERATOR'
+  ]
 }
-tjFile ::= item_*
-private item_ ::= (COMMENT|task)
 
-absolute_id ::= ID (DOT ID)*
-relative_id ::= BANG+ absolute_id
+// The grammar is deliberately tolerant: every statement is "head arguments* block?".
+// Which keywords are valid where is checked by annotators using the keyword metadata.
+// Statement boundaries are decided by TJParserUtil.argumentAllowed (keywords, line starts).
 
-task ::= task_header L_CURLY task_body_element* R_CURLY
-task_header ::= TASK_KEYWORD ID STRING
-task_body_element ::= depends | duration | note | responsible | start | end | task
+tjFile ::= root_item*
+private root_item ::= !<<eof>> (item | stray_brace) {pin=1 recoverWhile=item_recover}
+private item ::= macro_statement | statement
+private item_recover ::= !(statement_start | R_CURLY)
+private statement_start ::= KEYWORD | ID | ID_WITH_COLON | MACRO_CALL_START
+stray_brace ::= R_CURLY
 
-depends ::= DEPENDS_KEYWORD depends_list
-depends_list ::= ((relative_id|absolute_id) COMA depends_list)|(relative_id|absolute_id)
-duration ::= DURATION_KEYWORD INTEGER DURATION_UNIT
-note ::= NOTE_KEYWORD STRING
-responsible ::= RESPONSIBLE_KEYWORD ID
-start ::= START_KEYWORD DATE
-end ::= END_KEYWORD DATE
+statement ::= statement_head <<enterStatement>> argument* block? <<exitStatement>> {
+  pin=1
+  mixin="fr.ledcom.tj3.taskjugglerplugin.language.psi.impl.TJStatementMixin"
+  implements="fr.ledcom.tj3.taskjugglerplugin.language.psi.TJStatementBase"
+}
+statement_head ::= scenario_prefix? (KEYWORD | ID)
+scenario_prefix ::= ID_WITH_COLON {
+  mixin="fr.ledcom.tj3.taskjugglerplugin.language.psi.impl.TJScenarioPrefixMixin"
+}
+
+// A macro call in statement position, expanding to statements.
+macro_statement ::= macro_call
+
+private argument ::= <<argumentAllowed>> argument_value
+private argument_value ::= id_ref paren_group?
+                         | literal
+                         | date_expression
+                         | macro_call
+                         | paren_group
+                         | list_item_block
+                         | COMMA | MINUS | PLUS | TILDE | AT | OPERATOR | BANG | QUESTION | DOT
+
+// Attributes of one element of a comma separated list, e.g. "columns name { title 'x' }, start".
+private list_item_block ::= <<blockFollowedByComma>> block
+
+literal ::= STRING | MULTILINE_STRING | DATE | TIME | DURATION | FLOAT | INTEGER | MACRO_BODY | ENV_VAR {
+  mixin="fr.ledcom.tj3.taskjugglerplugin.language.psi.impl.TJLiteralMixin"
+}
+
+// task / resource / account ... identifiers, possibly hierarchical (a.b.c) or relative (!!a.b).
+id_ref ::= BANG* identifier (DOT identifier)* {
+  mixin="fr.ledcom.tj3.taskjugglerplugin.language.psi.impl.TJIdRefMixin"
+}
+private identifier ::= ID | KEYWORD
+
+macro_call ::= MACRO_CALL_START QUESTION? ID? STRING* MACRO_CALL_END {
+  pin=1
+  mixin="fr.ledcom.tj3.taskjugglerplugin.language.psi.impl.TJMacroCallMixin"
+}
+
+// Computed date, e.g. %{${now} - 1w}.
+date_expression ::= DATE_EXPR_START date_expression_content* R_CURLY {pin=1}
+private date_expression_content ::= literal | macro_call | id_ref | MINUS | PLUS
+
+// Parenthesised expressions (function calls, logical expressions): anything but braces.
+paren_group ::= L_PAREN paren_content* R_PAREN {pin=1}
+private paren_content ::= paren_group | id_ref | literal | macro_call | date_expression
+                        | COMMA | MINUS | PLUS | TILDE | AT | OPERATOR | BANG | QUESTION | DOT | ID_WITH_COLON
+
+block ::= L_CURLY block_item* R_CURLY {pin=1}
+private block_item ::= !(R_CURLY | <<eof>>) item {pin=1 recoverWhile=item_recover}

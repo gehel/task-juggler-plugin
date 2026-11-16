@@ -1,0 +1,9 @@
+# hash comment
+// slash comment
+/* block
+   comment */
+"double \"quoted\"
+string" 'single'
+note -8<-
+  Some { text }
+  ->8- next

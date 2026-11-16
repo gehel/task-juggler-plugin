@@ -1,0 +1,7 @@
+macro m [
+  allocate dev1 # c
+]
+macro s [ effort 1d ]
+${m} ${?opt "arg 1" "arg2"}
+include "$(HOME)/x.tji"
+foo $(PATH)

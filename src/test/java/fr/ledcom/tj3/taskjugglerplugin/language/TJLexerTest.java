@@ -15,23 +15,32 @@ public class TJLexerTest extends LexerTestCase {
         return "src/test/testData/lexer";
     }
 
-    public void testSimpleTask() {
-        doTest("task my_task \"Some Task\" {\n  depends other.thing\n}",
-                """
-                        TaskJugglerTokenType.TASK_KEYWORD ('task')
-                        WHITE_SPACE (' ')
-                        TaskJugglerTokenType.ID ('my_task')
-                        WHITE_SPACE (' ')
-                        TaskJugglerTokenType.STRING ('"Some Task"')
-                        WHITE_SPACE (' ')
-                        TaskJugglerTokenType.L_CURLY ('{')
-                        WHITE_SPACE ('\\n  ')
-                        TaskJugglerTokenType.DEPENDS_KEYWORD ('depends')
-                        WHITE_SPACE (' ')
-                        TaskJugglerTokenType.ID ('other')
-                        TaskJugglerTokenType.DOT ('.')
-                        TaskJugglerTokenType.ID ('thing')
-                        WHITE_SPACE ('\\n')
-                        TaskJugglerTokenType.R_CURLY ('}')""");
+    @Override
+    protected String getPathToTestDataFile(String extension) {
+        return getDirPath() + "/" + getTestName(true) + extension;
+    }
+
+    private void doFileTest() {
+        doFileTest("tjp");
+    }
+
+    public void testKeywordsAndIds() {
+        doFileTest();
+    }
+
+    public void testNumbersAndDates() {
+        doFileTest();
+    }
+
+    public void testStringsAndComments() {
+        doFileTest();
+    }
+
+    public void testMacros() {
+        doFileTest();
+    }
+
+    public void testRestartableAfterEachToken() {
+        checkCorrectRestart("task a \"A\" {\n  summary -8<-\n  text\n  ->8-\n  depends !b.task\n}\n");
     }
 }

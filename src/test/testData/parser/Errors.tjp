@@ -1,0 +1,6 @@
+task t "T" {
+  depends a,
+}
+}
+task u "U" {
+  effort 2d

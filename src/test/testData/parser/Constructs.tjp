@@ -1,0 +1,63 @@
+/* Block
+   comment */
+project acme "ACME" 2024-01-01 +6m {
+  timezone "Europe/Paris"
+  now 2024-03-05-13:00
+  numberformat "-" "" "," "." 1
+  scenario plan "Plan" {
+    scenario delayed "Delayed"
+  }
+  extend resource {
+    text Phone "Phone"
+  }
+}
+
+flags team, important
+macro allocate_devs [
+  allocate dev1
+  allocate dev2
+]
+macro one_liner [ effort 1d ]
+
+resource devs "Developers" {
+  resource dev1 "Alice" {
+    Phone "x100"
+    limits { dailymax 6.4h }
+    leaves annual 2024-02-01 - 2024-02-05
+  }
+  workinghours sat, sun off
+}
+
+task acme "ACME" {
+  task start "Kick-off" {
+    start ${projectstart}
+    delayed:start 2024-01-20
+    charge 21000.0 onstart
+  }
+  task spec "Specification" {
+    effort 20d
+    ${allocate_devs}
+    depends !start, !!other.task
+    journalentry 2024-02-03 "Problem" {
+      author dev1
+      summary -8<-
+        Multi-line { text } with "quotes"
+      ->8-
+    }
+  }
+}
+
+taskreport overview "" {
+  formats html, csv
+  columns bsi { title 'WBS' },
+          name, start, end,
+          chart { ${TaskTip} }
+  hidetask ~(isleaf() & plan.start > ${now})
+  journalattributes headline, author, date
+  sorttasks plan.start.up
+  timeformat "%Y-%m-%d" # trailing comment
+  include "reports.tji"
+  loadunit $(UNIT)
+  period %{${now} - 1w} +1w
+  hidetask ~(plan.end < %{${now} +1d})
+}
