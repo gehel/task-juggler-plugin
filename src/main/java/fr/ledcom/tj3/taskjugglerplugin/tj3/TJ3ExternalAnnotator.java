@@ -18,7 +18,6 @@ import fr.ledcom.tj3.taskjugglerplugin.language.references.TJIncludeGraph;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class TJ3ExternalAnnotator extends ExternalAnnotator<TJ3ExternalAnnotator
     private static final Logger LOG = Logger.getInstance(TJ3ExternalAnnotator.class);
     private static final Pattern QUOTED_TOKEN = Pattern.compile("token '([^']+)'");
 
-    public record Input(@NotNull File executable, @NotNull List<Path> mainFiles, @NotNull Path file) {
+    public record Input(@NotNull Path executable, @NotNull List<Path> mainFiles, @NotNull Path file) {
     }
 
     @Override
@@ -54,7 +53,7 @@ public class TJ3ExternalAnnotator extends ExternalAnnotator<TJ3ExternalAnnotator
         VirtualFile virtualFile = file.getVirtualFile();
         Path path = nioPath(virtualFile);
         if (path == null) return null;
-        File executable = TJ3.executable();
+        Path executable = TJ3.executable();
         if (executable == null) return null;
 
         FileDocumentManager documents = FileDocumentManager.getInstance();

@@ -4,13 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-An IntelliJ Platform plugin adding language support for [TaskJuggler](https://taskjuggler.org/) project files (`.tjp`, `.tji`): highlighting, completion, navigation/rename, quick docs, inspections, formatter, structure view, and `tj3` integration (syntax check, run configuration). Java 21, IntelliJ Platform Gradle Plugin 2.x, targets IntelliJ IDEA 2025.1+ (`sinceBuild = 251`).
+An IntelliJ Platform plugin adding language support for [TaskJuggler](https://taskjuggler.org/) project files (`.tjp`, `.tji`): highlighting, completion, navigation/rename, quick docs, inspections, formatter, structure view, and `tj3` integration (syntax check, run configuration). Java 25, IntelliJ Platform Gradle Plugin 2.x, built against IntelliJ IDEA 2026.2 and supporting 2026.2+ (`sinceBuild = 262`). The Java level is capped by the JetBrains Runtime of the oldest supported IDE (2026.2/2026.3 run Java 25), so it cannot go higher than that even if a newer JDK is installed; always build against the lowest supported IDE version.
 
 TaskJuggler language reference: https://taskjuggler.org/tj3/manual/index.html, also available locally via `tj3man` (`tj3man` lists all keywords; `tj3man <keyword>` shows syntax, context, attributes and examples for one keyword). Use it as the source of truth for syntax when extending the lexer/grammar.
 
 ## Commands
 
-Gradle 9 runs on any JDK ≥ 17; compilation uses a Java 21 toolchain that Gradle downloads automatically (foojay resolver). This machine has no system JDK: use IntelliJ's bundled runtime, e.g. `export JAVA_HOME=~/.local/share/JetBrains/Toolbox/apps/intellij-idea/jbr`.
+Gradle 9 runs on any JDK ≥ 17; compilation uses a Java 25 toolchain that Gradle downloads automatically (foojay resolver). JDKs on this machine are managed with SDKMAN (`~/.sdkman/candidates/java/current`; the user's shell is fish, wired up in `~/.config/fish/conf.d/sdkman.fish`).
 
 ```bash
 ./gradlew build              # generate lexer/parser, compile, test, and package the plugin
@@ -20,6 +20,10 @@ Gradle 9 runs on any JDK ≥ 17; compilation uses a Java 21 toolchain that Gradl
 ./gradlew verifyPlugin       # run the plugin verifier against recommended IDEs
 ./gradlew buildPlugin        # produce the distributable zip in build/distributions
 ```
+
+## CI and releases
+
+`.github/workflows/build.yml` runs `./gradlew build` (with the Ubuntu `tj3` package installed, so the example-based tests run) and `verifyPlugin` on pushes to `main` and on PRs. Development happens directly on `main`. Publishing a GitHub release tagged `vX.Y.Z` runs `release.yml`: builds with `-PpluginVersion=X.Y.Z`, signs and publishes to the JetBrains Marketplace (secrets `PUBLISH_TOKEN`, `CERTIFICATE_CHAIN`, `PRIVATE_KEY`, `PRIVATE_KEY_PASSWORD`) and attaches the zip to the release. The default version is `pluginVersion` in `gradle.properties`; update `changeNotes` in `build.gradle.kts` for each release.
 
 ## Generated code
 

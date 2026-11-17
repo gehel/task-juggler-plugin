@@ -139,7 +139,7 @@ public final class TJSemantics {
             }
             return result;
         }
-        if (!args.isEmpty() && args.get(0) instanceof TJIdRef ref && ref.isSimple()) {
+        if (!args.isEmpty() && args.getFirst() instanceof TJIdRef ref && ref.isSimple()) {
             // "task "Name"" has no id; "task id "Name"" has one.
             return List.of(ref);
         }
@@ -150,7 +150,7 @@ public final class TJSemantics {
     public static @Nullable TJIdRef declaredId(@NotNull TJStatement statement) {
         if (declarationKind(statement) == FLAG) return null;
         List<TJIdRef> ids = declaredIds(statement);
-        return ids.isEmpty() ? null : ids.get(0);
+        return ids.isEmpty() ? null : ids.getFirst();
     }
 
     /** Whether the identifier is the name of a declaration (as opposed to a reference or a value). */

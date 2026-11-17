@@ -51,7 +51,7 @@ public class TJDocumentationProvider extends AbstractDocumentationProvider {
         KeywordInfo info = statement.getKeywordInfo();
         if (info != null) return info;
         List<KeywordInfo> variants = KeywordRegistry.getInstance().byName(statement.getKeywordName());
-        return variants.isEmpty() ? null : variants.get(0);
+        return variants.isEmpty() ? null : variants.getFirst();
     }
 
     @Override

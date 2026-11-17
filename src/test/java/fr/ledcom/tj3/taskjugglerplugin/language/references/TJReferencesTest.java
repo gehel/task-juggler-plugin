@@ -151,7 +151,8 @@ public class TJReferencesTest extends BasePlatformTestCase {
 
     public void testGotoSymbol() {
         myFixture.configureByText("main.tjp", PROJECT);
-        Object[] items = myFixture.getGotoSymbolResults("db", false, null).toArray();
-        assertEquals(1, items.length);
+        // Since 2026.2 the fixture may report the same element more than once (the popup de-duplicates).
+        var items = myFixture.getGotoSymbolResults("db", false, null).stream().distinct().toList();
+        assertEquals(items.toString(), 1, items.size());
     }
 }

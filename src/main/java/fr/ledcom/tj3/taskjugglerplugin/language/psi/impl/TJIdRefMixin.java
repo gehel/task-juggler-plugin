@@ -75,7 +75,7 @@ public abstract class TJIdRefMixin extends ASTWrapperPsiElement implements TJIdR
     public @Nullable PsiElement getNameIdentifier() {
         if (!isDeclaration()) return null;
         List<ASTNode> segments = segmentNodes();
-        return segments.isEmpty() ? null : segments.get(segments.size() - 1).getPsi();
+        return segments.isEmpty() ? null : segments.getLast().getPsi();
     }
 
     @Override
@@ -92,7 +92,7 @@ public abstract class TJIdRefMixin extends ASTWrapperPsiElement implements TJIdR
     @Override
     public int getTextOffset() {
         List<ASTNode> segments = segmentNodes();
-        return segments.isEmpty() ? super.getTextOffset() : segments.get(segments.size() - 1).getStartOffset();
+        return segments.isEmpty() ? super.getTextOffset() : segments.getLast().getStartOffset();
     }
 
     @Override
@@ -115,7 +115,7 @@ public abstract class TJIdRefMixin extends ASTWrapperPsiElement implements TJIdR
                         node.getTextLength()), kind, i));
             }
         } else if (!segments.isEmpty()) {
-            ASTNode last = segments.get(segments.size() - 1);
+            ASTNode last = segments.getLast();
             references.add(new TJPropertyReference(self, TextRange.from(last.getStartOffset() - start,
                     last.getTextLength()), kind, segments.size() - 1));
         }

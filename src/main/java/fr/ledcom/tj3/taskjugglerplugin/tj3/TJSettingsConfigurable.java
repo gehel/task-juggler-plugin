@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Objects;
 
 /** Settings | Languages & Frameworks | TaskJuggler. */
@@ -66,8 +66,8 @@ public class TJSettingsConfigurable implements Configurable {
     }
 
     private void updateStatus() {
-        File executable = TJ3.executable();
+        Path executable = TJ3.executable();
         status.setText(executable == null ? "tj3 not found: install TaskJuggler (e.g. 'gem install taskjuggler')"
-                : "Using " + executable.getAbsolutePath());
+                : "Using " + executable.toAbsolutePath());
     }
 }

@@ -116,7 +116,7 @@ public final class TJDeclarations {
                 };
                 result.add(new TJDeclaration(kind, fullId, id));
             }
-            String segment = ids.isEmpty() ? anonymous(statement) : ids.get(0).getText();
+            String segment = ids.isEmpty() ? anonymous(statement) : ids.getFirst().getText();
             if (kind == PropertyKind.TASK) innerTasks = append(taskPath, segment);
             if (kind == PropertyKind.REPORT) innerReports = append(reportPath, segment);
         } else if ("supplement".equals(statement.getKeywordName())) {

@@ -9,11 +9,11 @@ plugins {
 }
 
 group = "fr.ledcom.tj3"
-version = "1.0-SNAPSHOT"
+version = providers.gradleProperty("pluginVersion").get()
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 
@@ -42,7 +42,7 @@ sourceSets {
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
 dependencies {
     intellijPlatform {
-        intellijIdeaCommunity("2025.1.4.1")
+        intellijIdea("2026.2.5")
         testFramework(TestFrameworkType.Platform)
     }
     testImplementation("junit:junit:4.13.2")
@@ -52,13 +52,22 @@ dependencies {
 intellijPlatform {
     pluginConfiguration {
         ideaVersion {
-            sinceBuild = "251"
+            sinceBuild = "262"
         }
 
         changeNotes = """
-            Initial version: highlighting, completion, navigation, documentation, inspections, formatter,
-            structure view and tj3 integration for TaskJuggler files.
+            First public release: highlighting, completion, navigation, quick documentation, inspections,
+            formatter, structure view and tj3 integration (syntax check, run configuration) for TaskJuggler files.
         """.trimIndent()
+    }
+    // Credentials come from the environment (GitHub secrets in .github/workflows/release.yml).
+    signing {
+        certificateChain = providers.environmentVariable("CERTIFICATE_CHAIN")
+        privateKey = providers.environmentVariable("PRIVATE_KEY")
+        password = providers.environmentVariable("PRIVATE_KEY_PASSWORD")
+    }
+    publishing {
+        token = providers.environmentVariable("PUBLISH_TOKEN")
     }
     pluginVerification {
         ides {
@@ -69,13 +78,13 @@ intellijPlatform {
 
 val basePackagePath = "fr/ledcom/tj3/taskjugglerplugin"
 
-val generateTJLexer by tasks.registering(GenerateLexerTask::class) {
+val generateTJLexer = tasks.register<GenerateLexerTask>("generateTJLexer") {
     sourceFile.set(file("src/main/grammars/TaskJuggler.flex"))
     targetRootOutputDir.set(generatedLexerRoot)
     purgeOldFiles.set(true)
 }
 
-val generateTJParser by tasks.registering(GenerateParserTask::class) {
+val generateTJParser = tasks.register<GenerateParserTask>("generateTJParser") {
     sourceFile.set(file("src/main/grammars/TaskJuggler.bnf"))
     targetRootOutputDir.set(generatedParserRoot)
     pathToParser.set("$basePackagePath/TJParser.java")
@@ -86,5 +95,7 @@ val generateTJParser by tasks.registering(GenerateParserTask::class) {
 tasks {
     withType<JavaCompile> {
         dependsOn(generateTJLexer, generateTJParser)
+        // Report use of deprecated platform/JDK APIs; generated lexer/parser sources are included.
+        options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:removal"))
     }
 }

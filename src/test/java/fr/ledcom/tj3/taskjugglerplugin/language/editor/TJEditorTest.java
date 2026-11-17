@@ -3,8 +3,11 @@ package fr.ledcom.tj3.taskjugglerplugin.language.editor;
 import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.testFramework.PlatformTestUtil;
+import com.intellij.ide.structureView.TreeBasedStructureViewBuilder;
+import com.intellij.ide.util.treeView.smartTree.TreeElement;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import fr.ledcom.tj3.taskjugglerplugin.language.structure.TJStructureViewFactory;
 
 public class TJEditorTest extends BasePlatformTestCase {
 
@@ -48,17 +51,29 @@ public class TJEditorTest extends BasePlatformTestCase {
                 }
                 macro m [ x ]
                 """);
-        myFixture.testStructureView(component -> {
-            PlatformTestUtil.expandAll(component.getTree());
-            PlatformTestUtil.assertTreeEqual(component.getTree(), """
-                    -a.tjp
+        // The structure view tool window lives in a separate bundled plugin since 2026.x: test the model directly.
+        var model = new TJStructureViewFactory().getStructureViewBuilder(myFixture.getFile()) instanceof
+                TreeBasedStructureViewBuilder builder ? builder.createStructureViewModel(myFixture.getEditor()) : null;
+        assertNotNull(model);
+        try {
+            StringBuilder tree = new StringBuilder();
+            render(model.getRoot(), 0, tree);
+            assertEquals("""
+                    a.tjp
                      p (P)
-                     -dev (Dev)
+                     dev (Dev)
                       dev1 (Alice)
-                     -t (Top)
+                     t (Top)
                       sub (Sub)
                      m
-                    """);
-        });
+                    """, tree.toString());
+        } finally {
+            Disposer.dispose(model);
+        }
+    }
+
+    private static void render(TreeElement element, int depth, StringBuilder out) {
+        out.append(" ".repeat(depth)).append(element.getPresentation().getPresentableText()).append('\n');
+        for (TreeElement child : element.getChildren()) render(child, depth + 1, out);
     }
 }

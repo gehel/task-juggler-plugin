@@ -139,7 +139,7 @@ public class TJCompletionContributor extends CompletionContributor {
         }
     }
 
-    private static final InsertHandler<LookupElement> SPACE = (context, item) -> {
+    private static final InsertHandler<LookupElement> SPACE = (context, _) -> {
         Document document = context.getDocument();
         int offset = context.getTailOffset();
         CharSequence text = document.getCharsSequence();

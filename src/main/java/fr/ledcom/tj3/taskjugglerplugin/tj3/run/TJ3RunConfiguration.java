@@ -97,7 +97,7 @@ public class TJ3RunConfiguration extends LocatableConfigurationBase<TJ3RunConfig
 
             @Override
             protected @NotNull ProcessHandler startProcess() throws ExecutionException {
-                File executable = TJ3.executable();
+                Path executable = TJ3.executable();
                 if (executable == null) throw new ExecutionException("tj3 executable not found");
                 Path file = Path.of(getProjectFile()).toAbsolutePath();
                 List<String> args = new ArrayList<>();

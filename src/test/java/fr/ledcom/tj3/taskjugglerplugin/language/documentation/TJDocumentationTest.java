@@ -1,6 +1,6 @@
 package fr.ledcom.tj3.taskjugglerplugin.language.documentation;
 
-import com.intellij.codeInsight.documentation.DocumentationManager;
+import com.intellij.codeInsight.TargetElementUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
@@ -8,11 +8,16 @@ public class TJDocumentationTest extends BasePlatformTestCase {
 
     private String docAtCaret(String text) {
         myFixture.configureByText("a.tjp", text);
-        PsiElement original = myFixture.getFile().findElementAt(myFixture.getCaretOffset());
-        PsiElement target = DocumentationManager.getInstance(getProject())
-                .findTargetElement(myFixture.getEditor(), myFixture.getFile());
+        int offset = myFixture.getCaretOffset();
+        PsiElement original = myFixture.getFile().findElementAt(offset);
+        var provider = new TJDocumentationProvider();
+        // Same lookup order as the platform: the provider's custom element first, then the referenced declaration.
+        PsiElement target = provider.getCustomDocumentationElement(myFixture.getEditor(), myFixture.getFile(), original, offset);
+        if (target == null) {
+            target = TargetElementUtil.findTargetElement(myFixture.getEditor(), TargetElementUtil.getInstance().getAllAccepted());
+        }
         assertNotNull("no documentation target", target);
-        String doc = new TJDocumentationProvider().generateDoc(target, original);
+        String doc = provider.generateDoc(target, original);
         assertNotNull(doc);
         return doc;
     }

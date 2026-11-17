@@ -74,7 +74,7 @@ public class TJStructureViewElement implements StructureViewTreeElement, Sortabl
         for (PsiElement child = parent.getFirstChild(); child != null; child = child.getNextSibling()) {
             if (child instanceof TJStatement statement) {
                 if (isStructural(statement)) {
-                    children.add(new TJStructureViewElement((NavigatablePsiElement) statement));
+                    children.add(new TJStructureViewElement(statement));
                 } else {
                     collect(statement.getBody(), children);
                 }

@@ -5,11 +5,13 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.PathEnvironmentVariableUtil;
 import com.intellij.execution.process.CapturingProcessHandler;
 import com.intellij.execution.process.ProcessOutput;
+import com.intellij.openapi.util.SystemInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +32,40 @@ public final class TJ3 {
     }
 
     /** The configured tj3 executable, or {@code null} if it cannot be found. */
-    public static @Nullable File executable() {
+    public static @Nullable Path executable() {
         String configured = TJSettings.getInstance().getState().tj3Path;
         if (configured == null || configured.isBlank()) configured = "tj3";
-        File file = new File(configured);
-        if (file.isAbsolute() || configured.contains(File.separator)) return file.canExecute() ? file : null;
-        return PathEnvironmentVariableUtil.findInPath(configured);
+        Path path = Path.of(configured);
+        if (path.isAbsolute() || path.getNameCount() > 1) return Files.isExecutable(path) ? path : null;
+        return findOnPath(configured);
     }
 
-    public static @NotNull GeneralCommandLine commandLine(@NotNull File executable, @NotNull Path workDir,
+    /**
+     * Looks a command up on the PATH. (PathEnvironmentVariableUtil.findFirst only exists from 2026.3 on, and the
+     * older findInPath is scheduled for removal.)
+     */
+    private static @Nullable Path findOnPath(String name) {
+        String pathValue = PathEnvironmentVariableUtil.getPathVariableValue();
+        if (pathValue == null) return null;
+        List<String> suffixes = SystemInfo.isWindows
+                ? PathEnvironmentVariableUtil.getWindowsExecutableFileExtensions().stream().map(String::toLowerCase).toList()
+                : List.of("");
+        for (String dir : PathEnvironmentVariableUtil.getPathDirs(pathValue)) {
+            for (String suffix : suffixes) {
+                try {
+                    Path candidate = Path.of(dir, name + suffix);
+                    if (Files.isRegularFile(candidate) && Files.isExecutable(candidate)) return candidate;
+                } catch (InvalidPathException _) {
+                    // malformed PATH entry: skip it
+                }
+            }
+        }
+        return null;
+    }
+
+    public static @NotNull GeneralCommandLine commandLine(@NotNull Path executable, @NotNull Path workDir,
                                                           @NotNull List<String> arguments) {
-        return new GeneralCommandLine(executable.getAbsolutePath())
+        return new GeneralCommandLine(executable.toAbsolutePath().toString())
                 .withParameters(arguments)
                 .withWorkDirectory(workDir.toFile())
                 .withCharset(StandardCharsets.UTF_8)
@@ -48,7 +73,7 @@ public final class TJ3 {
     }
 
     /** Runs {@code tj3 --check-syntax} on the given main project file. */
-    public static @NotNull List<Message> checkSyntax(@NotNull File executable, @NotNull Path mainFile)
+    public static @NotNull List<Message> checkSyntax(@NotNull Path executable, @NotNull Path mainFile)
             throws ExecutionException {
         GeneralCommandLine command = commandLine(executable, mainFile.getParent(),
                 List.of("--check-syntax", "--no-color", "--silent", mainFile.toAbsolutePath().toString()));

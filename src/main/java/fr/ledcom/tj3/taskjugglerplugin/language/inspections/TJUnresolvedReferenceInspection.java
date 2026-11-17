@@ -40,12 +40,13 @@ public class TJUnresolvedReferenceInspection extends TJInspectionBase {
             return;
         }
         for (PsiReference reference : element.getReferences()) {
-            PropertyKind kind;
-            if (reference instanceof TJPropertyReference p) kind = p.getKind();
-            else if (reference instanceof TJNameReference<?> n && !n.isBuiltin()) kind = n.getKind();
-            else continue;
-            if (kind == PropertyKind.ATTRIBUTE) continue;
-            if (((PsiPolyVariantReference) reference).multiResolve(false).length > 0) continue;
+            PropertyKind kind = switch (reference) {
+                case TJPropertyReference p -> p.getKind();
+                case TJNameReference<?> n when !n.isBuiltin() -> n.getKind();
+                default -> null;
+            };
+            if (kind == null || kind == PropertyKind.ATTRIBUTE) continue;
+            if (reference instanceof PsiPolyVariantReference poly && poly.multiResolve(false).length > 0) continue;
             String name = reference.getCanonicalText();
             if (definedInMacro(element, name)) continue;
             holder.registerProblem(reference, "Unknown " + kind.getDisplayName() + " '" + name + "'",
