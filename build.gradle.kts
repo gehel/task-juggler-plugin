@@ -98,4 +98,9 @@ tasks {
         // Report use of deprecated platform/JDK APIs; generated lexer/parser sources are included.
         options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:removal"))
     }
+    // verifyPluginSignature reads signPlugin's output without declaring it (IntelliJ Platform Gradle Plugin 2.20.1),
+    // which Gradle 9 rejects.
+    verifyPluginSignature {
+        dependsOn(signPlugin)
+    }
 }
