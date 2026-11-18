@@ -58,6 +58,7 @@ intellijPlatform {
         changeNotes = """
             First public release: highlighting, completion, navigation, quick documentation, inspections,
             formatter, structure view and tj3 integration (syntax check, run configuration) for TaskJuggler files.
+            Custom plugin logo and file type icon based on the TaskJuggler logo.
         """.trimIndent()
     }
     // Credentials come from the environment (GitHub secrets in .github/workflows/release.yml).
